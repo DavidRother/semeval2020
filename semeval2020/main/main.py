@@ -4,7 +4,7 @@ from torch.utils.data import TensorDataset, DataLoader, RandomSampler, Sequentia
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from pytorch_pretrained_bert import BertTokenizer, BertConfig
-from pytorch_pretrained_bert import BertAdam, BertForSequenceClassification
+from pytorch_pretrained_bert import BertAdam, BertForSequenceClassification, BertModel
 from tqdm import tqdm, trange
 import pandas as pd
 import io
@@ -36,3 +36,12 @@ attention_masks = []
 for seq in input_ids:
     seq_mask = [float(i > 0) for i in seq]
     attention_masks.append(seq_mask)
+
+model = BertModel.from_pretrained("bert-base-uncased")
+
+prediction_inputs = torch.tensor(input_ids)
+prediction_masks = torch.tensor(attention_masks)
+
+out = model(prediction_inputs, token_type_ids=None, attention_mask=prediction_masks)
+
+print('finished')
