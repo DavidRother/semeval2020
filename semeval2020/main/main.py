@@ -14,8 +14,9 @@ import matplotlib.pyplot as plt
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 n_gpu = torch.cuda.device_count()
 
-sentence = "Hi this is me a guy named David"
+sentence = "Hi this is me a guy named David and all of you suck"
 ex_sent = "[CLS] " + sentence + " [SEP]"
+# ex_sent = sentence
 
 print(ex_sent)
 

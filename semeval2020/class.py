@@ -33,8 +33,11 @@ def main():
     start_time = time.time()    
     
     # Get string-value tuples
+    print("THIS IS THE FILE WE ARE READING FROM:")
+    print(valueFile)
+    print("END OF THE FILENAME WE ARE READING FROM")
     with open(valueFile, 'r', encoding='utf-8') as f_in:
-        string_value = [( line.strip().split('\t')[0], float(line.strip().split('\t')[1]) ) for line in f_in]
+        string_value = [(line.strip().split('\t')[0], float(line.strip().split('\t')[1]) ) for line in f_in]
         
     # Get strings and string-value map
     strings = [s for (s,v) in string_value]
