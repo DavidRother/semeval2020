@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import itertools
+import pandas as pd
 
 
 state = (["../../trial_data_public/corpora/german/corpus2", 'Modern Text'],
@@ -24,9 +25,9 @@ with open(target_file, 'r', encoding='utf-8') as f_in:
 epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])]
 target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])}
 
+outPath = "/home/david/PycharmProjects/semeval2020/semeval2020/main/embedding_data.csv"
 for fig_idx, (corpDir, epoch) in enumerate(state):
     print(f'Working on {epoch}')
-    outPath = "/"
     target_file = "../../trial_data_public/targets/german.txt"
 
     sentences = PathLineSentences(corpDir)
@@ -88,7 +89,12 @@ for fig_idx, (corpDir, epoch) in enumerate(state):
         complete_embeddings.extend(embeddings)
         target_embeddings_complete[target + epoch].extend(embeddings)
 
+data = {str(idx): [target_epoch, *embedding] for idx, (target_epoch, embedding_list) in
+        enumerate(target_embeddings_complete.items()) for embedding in embedding_list}
+df = pd.DataFrame.from_dict(data)
 
+
+df.to_csv(outPath)
 
 x_data = np.asarray(complete_embeddings)
 umap_instance = umap.UMAP(n_neighbors=10, min_dist=1, metric='cosine')

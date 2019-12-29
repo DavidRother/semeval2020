@@ -8,7 +8,6 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import itertools
 
 
 state = (["../../trial_data_public/corpora/german/corpus2", 'Modern Text'],
@@ -16,15 +15,7 @@ state = (["../../trial_data_public/corpora/german/corpus2", 'Modern Text'],
 
 windowSize = 16
 corpDir = "../../trial_data_public/corpora/german/corpus1"
-complete_embeddings = []
-target_file = "../../trial_data_public/targets/german.txt"
-# Get targets
-with open(target_file, 'r', encoding='utf-8') as f_in:
-    targets = [line.strip().split('\t')[0] for line in f_in]
-epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])]
-target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])}
-
-for fig_idx, (corpDir, epoch) in enumerate(state):
+for corpDir, epoch in state:
     print(f'Working on {epoch}')
     outPath = "/"
     target_file = "../../trial_data_public/targets/german.txt"
@@ -40,6 +31,10 @@ for fig_idx, (corpDir, epoch) in enumerate(state):
     max_len = 0
     for sentence in sentences:
         max_len = max(len(sentence), max_len)
+
+    # Get targets
+    with open(target_file, 'r', encoding='utf-8') as f_in:
+        targets = [line.strip().split('\t')[0] for line in f_in]
 
     target_sentences = {target: ([], [], []) for target in targets}
     target_embeddings = {target: [] for target in targets}
@@ -84,31 +79,17 @@ for fig_idx, (corpDir, epoch) in enumerate(state):
                 target_embeddings[target].extend([emb for emb in embeddings
                                                   if not (np.isnan(np.sum(emb)) or np.sum(emb) == 0)])
 
-    for target, embeddings in target_embeddings.items():
-        complete_embeddings.extend(embeddings)
-        target_embeddings_complete[target + epoch].extend(embeddings)
+    for idx, (target, embeddings) in enumerate(target_embeddings.items()):
+        x_data = np.asarray(embeddings)
+        try:
+            umap_instance = umap.UMAP(n_neighbors=max(3, min(50, int(np.log(len(embeddings))))), min_dist=1, metric='cosine')
+            embedded_data = umap_instance.fit_transform(x_data)
 
-
-
-x_data = np.asarray(complete_embeddings)
-umap_instance = umap.UMAP(n_neighbors=10, min_dist=1, metric='cosine')
-embedded_data = umap_instance.fit_transform(x_data)
-
-label_encoding = {target: idx for idx, target in enumerate(epoch_targets)}
-target_data_encoded = [label_encoding[target] for target, embed in target_embeddings_complete.items() for emb in embed]
-
-colors = ['black', 'red', 'orange', 'blue', 'gray', 'salmon', 'wheat', 'navy']
-target_colors = {target: colors[idx] for idx, target in enumerate(epoch_targets)}
-
-sns.set(style='white', context='poster')
-
-fig, ax = plt.subplots(1, figsize=(14, 10))
-plt.scatter(embedded_data[:, 0], embedded_data[:, 1], c=target_data_encoded, cmap='Spectral', alpha=1.0)
-plt.setp(ax, xticks=[], yticks=[])
-cbar = plt.colorbar(boundaries=np.arange(len(epoch_targets) + 1) - 0.5)
-cbar.set_ticks(np.arange(len(epoch_targets)))
-cbar.set_ticklabels(epoch_targets)
-plt.title(f'Embedded via UMAP for both epochs')
+            plt.figure(idx)
+            plt.scatter(embedded_data[:, 0], embedded_data[:, 1])
+            plt.title(f'{target} Embedded via UMAP for {epoch}')
+        except:
+            print(f'We are passing on {target} on  {epoch}')
 plt.show()
 
 
