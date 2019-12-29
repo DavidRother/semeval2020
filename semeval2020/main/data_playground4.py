@@ -25,7 +25,7 @@ with open(target_file, 'r', encoding='utf-8') as f_in:
 epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])]
 target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])}
 
-outPath = "/home/david/PycharmProjects/semeval2020/semeval2020/main/embedding_data.csv"
+outPath = "/home/david/PycharmProjects/semeval2020/semeval2020/embedding_data/german/"
 for fig_idx, (corpDir, epoch) in enumerate(state):
     print(f'Working on {epoch}')
     target_file = "../../trial_data_public/targets/german.txt"
@@ -44,7 +44,7 @@ for fig_idx, (corpDir, epoch) in enumerate(state):
 
     target_sentences = {target: ([], [], []) for target in targets}
     target_embeddings = {target: [] for target in targets}
-    tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
+    tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case=False)
 
     MAX_LEN = 128
 
@@ -89,12 +89,9 @@ for fig_idx, (corpDir, epoch) in enumerate(state):
         complete_embeddings.extend(embeddings)
         target_embeddings_complete[target + epoch].extend(embeddings)
 
-data = {str(idx): [target_epoch, *embedding] for idx, (target_epoch, embedding_list) in
-        enumerate(target_embeddings_complete.items()) for embedding in embedding_list}
-df = pd.DataFrame.from_dict(data)
-
-
-df.to_csv(outPath)
+for target, embeddings in target_embeddings_complete.items():
+    df = pd.DataFrame.from_records(embeddings)
+    df.to_csv(outPath + target + ".csv")
 
 x_data = np.asarray(complete_embeddings)
 umap_instance = umap.UMAP(n_neighbors=10, min_dist=1, metric='cosine')

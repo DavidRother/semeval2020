@@ -11,6 +11,13 @@ import seaborn as sns
 import itertools
 import pandas as pd
 
+target_file = "../../trial_data_public/targets/german.txt"
+# Get targets
+with open(target_file, 'r', encoding='utf-8') as f_in:
+    targets = [line.strip().split('\t')[0] for line in f_in]
+
+epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern_Text', 'Old_Text'])]
+target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern_Text', 'Old_Text'])}
 
 data_source = "/home/david/PycharmProjects/semeval2020/semeval2020/main/embedding_data.csv"
 

@@ -108,3 +108,5 @@ Workbench/
 
 # mypy
 .mypy_cache/
+
+/semeval2020/embedding_data/

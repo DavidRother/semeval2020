@@ -21,8 +21,9 @@ target_file = "../../trial_data_public/targets/german.txt"
 # Get targets
 with open(target_file, 'r', encoding='utf-8') as f_in:
     targets = [line.strip().split('\t')[0] for line in f_in]
-epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])]
-target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern Text', 'Old Text'])}
+
+epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern_Text', 'Old_Text'])]
+target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern_Text', 'Old_Text'])}
 
 for fig_idx, (corpDir, epoch) in enumerate(state):
     print(f'Working on {epoch}')
@@ -87,8 +88,6 @@ for fig_idx, (corpDir, epoch) in enumerate(state):
     for target, embeddings in target_embeddings.items():
         complete_embeddings.extend(embeddings)
         target_embeddings_complete[target + epoch].extend(embeddings)
-
-
 
 x_data = np.asarray(complete_embeddings)
 umap_instance = umap.UMAP(n_neighbors=10, min_dist=1, metric='cosine')
