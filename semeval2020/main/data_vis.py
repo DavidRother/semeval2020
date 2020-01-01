@@ -12,6 +12,7 @@ import itertools
 import pandas as pd
 
 target_file = "../../trial_data_public/targets/german.txt"
+language = 'german'
 # Get targets
 with open(target_file, 'r', encoding='utf-8') as f_in:
     targets = [line.strip().split('\t')[0] for line in f_in]
@@ -19,10 +20,9 @@ with open(target_file, 'r', encoding='utf-8') as f_in:
 epoch_targets = [target + ep for target, ep in itertools.product(targets, ['Modern_Text', 'Old_Text'])]
 target_embeddings_complete = {target + ep: [] for target, ep in itertools.product(targets, ['Modern_Text', 'Old_Text'])}
 
-data_source = "/home/david/PycharmProjects/semeval2020/semeval2020/main/embedding_data.csv"
-
-df = pd.read_csv(data_source, header=[0], nrows=1)
-target_epoch_list = df[:][0]
+data_source = "/home/david/PycharmProjects/semeval2020/semeval2020/embedding_data/"
+for epoch in epoch_targets:
+    target_embeddings_complete[epoch] = pd.read_csv(data_source + language + '/' + epoch + '.csv')
 
 # x_data = np.asarray(complete_embeddings)
 # umap_instance = umap.UMAP(n_neighbors=10, min_dist=1, metric='cosine')
