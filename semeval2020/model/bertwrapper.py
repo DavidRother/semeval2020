@@ -38,8 +38,8 @@ class BertWrapper:
 
     def get_tokenized_input_ids(self, tokenized_text, padding_length):
         return pad_sequences([self.tokenizer.convert_tokens_to_ids(tokenized_text)], maxlen=padding_length,
-                             dtype="long", truncating="post", padding="post")
+                             dtype="long", truncating="post", padding="post")[0]
 
     @staticmethod
     def get_attention_mask(input_ids):
-        return [float(i > 0) for i in input_ids[0]]
+        return [float(i > 0) for i in input_ids]
