@@ -1,0 +1,1 @@
+from semeval2020.evaluation import evaluation_suite

@@ -13,25 +13,23 @@ def main():
     """
 
     # Get the arguments
-    # args = docopt("""Make count-based vector space from corpus.
-    #
-    # Usage:
-    #     cnt.py <corpDir> <outPath> <windowSize>
-    #
-    # Arguments:
-    #
-    #     <corpDir> = path to corpus or corpus directory (iterates through files)
-    #     <outPath> = output path for vectors
-    #     <windowSize> = the linear distance of context words to consider in each direction
-    #
-    # """)
-    #
-    # corpDir = args['<corpDir>']
-    # outPath = args['<outPath>']
-    # windowSize = int(args['<windowSize>'])
+    args = docopt("""Make count-based vector space from corpus.
+
+    Usage:
+        cnt.py <corpDir> <outPath> <windowSize>
+
+    Arguments:
+
+        <corpDir> = path to corpus or corpus directory (iterates through files)
+        <outPath> = output path for vectors
+        <windowSize> = the linear distance of context words to consider in each direction
+
+    """)
+
+    corpDir = args['<corpDir>']
+    outPath = args['<outPath>']
+    windowSize = int(args['<windowSize>'])
     windowSize = 16
-    corpDir = "../trial_data_public/corpora/german/corpus1"
-    outPath = "/"
     
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
     logging.info(__file__.upper())

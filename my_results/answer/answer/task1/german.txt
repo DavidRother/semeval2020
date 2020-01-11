@@ -1,0 +1,4 @@
+haben	0
+ändern	1
+und	0
+Gott	1

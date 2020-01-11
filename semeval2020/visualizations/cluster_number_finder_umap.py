@@ -8,6 +8,12 @@ from semeval2020.model.embeddingloader import EmbeddingLoader
 from sklearn.cluster import KMeans
 from kneed import KneeLocator
 
+import warnings
+from numba import NumbaPerformanceWarning
+
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
+
 ########################################
 #  Config Parameter ####################
 ########################################
@@ -35,21 +41,21 @@ for lang_idx, language in enumerate(languages):
 
     for fig_idx, word in enumerate(target_words):
         word_embeddings = []
-        embeddings_label_encoded = []
         for emb_loader in emb_loaders:
             embedding = np.asarray(emb_loader[word])
             word_embeddings.append(embedding)
-            embeddings_label_encoded.extend([label_encoding[emb_loader.corpus]] * len(embedding))
 
         x_data = np.vstack(word_embeddings)
-        umap_instance = umap.UMAP(n_neighbors=10, min_dist=0.05, n_components=10, metric='cosine')
+        umap_instance = umap.UMAP(n_neighbors=10, min_dist=0.05, n_components=2, metric='cosine')
         umap_embedded_data = umap_instance.fit_transform(x_data)
 
         Sum_of_squared_distances = []
         K = range(1, min(len(umap_embedded_data) + 1, 15))
+        km_list = []
         for k in K:
             km = KMeans(n_clusters=k)
             km = km.fit(umap_embedded_data)
+            km_list.append(km)
             Sum_of_squared_distances.append(km.inertia_)
 
         knee = KneeLocator(K, Sum_of_squared_distances, curve="convex", direction="decreasing")

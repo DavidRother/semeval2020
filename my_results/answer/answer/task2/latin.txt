@@ -1,0 +1,4 @@
+pontifex	0.5
+virtus	0.18511805394307243
+nepos	0.5
+necessarius	0.6471639908648155

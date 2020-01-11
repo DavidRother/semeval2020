@@ -1,5 +1,5 @@
 from semeval2020.model.bertwrapper import BertWrapper
-from semeval2020.model.dataloader import Dataloader
+from semeval2020.data_loader.sentence_loader import SentenceLoader
 from semeval2020.model import preprocessing
 
 import torch
@@ -12,7 +12,7 @@ import tqdm
 #  Config Parameter ####################
 ########################################
 
-language = 'latin'
+language = 'swedish'
 corpus = "corpus1"
 
 base_path = "../../trial_data_public/"
@@ -30,13 +30,14 @@ padding_length = 128
 base_out_path = f"{output_path}{language}/{corpus}/"
 os.makedirs(base_out_path, exist_ok=True)
 
-data_loader = Dataloader(base_path, language=language, corpus=corpus)
+data_loader = SentenceLoader(base_path, language=language, corpus=corpus)
 bert_model = BertWrapper(model_string=model_string)
 
-data_loader.sentences = preprocessing.sanitized_sentences(data_loader.sentences, max_len=max_length_sentence)
-data_loader.sentences = preprocessing.filter_for_words(data_loader.sentences, data_loader.target_words)
-tokenized_target_sentences = bert_model.tokenize_sentences(data_loader.sentences, data_loader.target_words)
-target_embeddings_dict = {target: [] for target in data_loader.target_words}
+target_words, sentences = data_loader.load()
+sentences = preprocessing.sanitized_sentences(sentences, max_len=max_length_sentence)
+sentences = preprocessing.filter_for_words(sentences, target_words)
+tokenized_target_sentences = bert_model.tokenize_sentences(sentences, target_words)
+target_embeddings_dict = {target: [] for target in target_words}
 
 bert_model.enter_eval_mode()
 

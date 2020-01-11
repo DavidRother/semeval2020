@@ -18,7 +18,7 @@ class BertWrapper:
         target_embeddings = {target: [] for target in target_word_idx_dict}
         with torch.no_grad():
             encoded_layers, _ = self.model(input_ids_tensor, token_type_ids=None, attention_mask=attention_mask)
-            embedding = torch.cat(encoded_layers[8:12], 2)
+            embedding = encoded_layers[11]
             for target, target_idx in target_word_idx_dict.items():
                 embeddings = [torch.mean(embedding[:, idx[0]:idx[1], :], dim=1).numpy().flatten() for idx in target_idx]
                 target_embeddings[target].extend([emb for emb in embeddings
