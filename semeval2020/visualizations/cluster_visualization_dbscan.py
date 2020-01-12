@@ -14,11 +14,31 @@ from numba import NumbaPerformanceWarning
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 
+# Because having multiple scatters in one plot is too much work
+def mscatter(x,y, ax=None, m=None, **kw):
+    import matplotlib.markers as mmarkers
+    if not ax: ax=plt.gca()
+    sc = plt.scatter(x,y,**kw)
+    if (m is not None) and (len(m)==len(x)):
+        paths = []
+        for marker in m:
+            if isinstance(marker, mmarkers.MarkerStyle):
+                marker_obj = marker
+            else:
+                marker_obj = mmarkers.MarkerStyle(marker)
+            path = marker_obj.get_path().transformed(
+                        marker_obj.get_transform())
+            paths.append(path)
+        sc.set_paths(paths)
+    return sc
+
+
 ########################################
 #  Config Parameter ####################
 ########################################
 
-languages = ['german', "swedish", "latin", "english"]
+# 'german', "swedish", "latin", "english"
+languages = ['german']
 corpora = ["corpus1", "corpus2"]
 
 base_path = "../../semeval2020/embedding_data/"
@@ -31,6 +51,7 @@ corpora_to_load = list(itertools.product(languages, corpora))
 corpora_embeddings = {f"{language}_{corpus}": EmbeddingLoader(base_path, language=language, corpus=corpus)
                       for language, corpus in corpora_to_load}
 label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
+marker_encoding = {0: '+', 1: "*"}
 colors = ['black', 'red', 'orange', 'blue', 'gray', 'salmon', 'wheat', 'navy']
 target_colors = {target: colors[idx] for idx, target in enumerate(corpora)}
 
@@ -52,14 +73,14 @@ for lang_idx, language in enumerate(languages):
         umap_embedded_data = umap_instance.fit_transform(x_data)
 
         clustering = DBSCAN(eps=0.8, min_samples=5).fit(umap_embedded_data)
-        labels = clustering.labels_
+        labels = np.asarray(clustering.labels_) + 1
 
         cluster_n = len(set(labels))
         plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
         sns.set(style='white', context='poster')
         _, ax = plt.subplots(1, figsize=(14, 10))
-        plt.scatter(umap_embedded_data[:, 0], umap_embedded_data[:, 1], c=labels,
-                    cmap='Spectral', alpha=1.0)
+        markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
+        mscatter(umap_embedded_data[:, 0], umap_embedded_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral', alpha=1.0)
         plt.setp(ax, xticks=[], yticks=[])
         if cluster_n > 1:
             color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
