@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import itertools
 from semeval2020.model.embeddingloader import EmbeddingLoader
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import Birch
 
 import warnings
 from numba import NumbaPerformanceWarning
@@ -73,8 +73,8 @@ for lang_idx, language in enumerate(languages):
         umap_instance = umap.UMAP(n_neighbors=10, min_dist=0.05, n_components=2, metric='cosine')
         umap_embedded_data = umap_instance.fit_transform(x_data)
 
-        clustering = DBSCAN(eps=0.5, min_samples=5).fit(umap_embedded_data)
-        labels = np.asarray(clustering.labels_) + 1
+        clustering = Birch(n_clusters=None, threshold=1).fit(umap_embedded_data)
+        labels = np.asarray(clustering.labels_)
         if -1 in clustering.labels_:
             print(f"Noise points in the first sense for word {word}")
 
@@ -89,7 +89,7 @@ for lang_idx, language in enumerate(languages):
             color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
             color_bar.set_ticks(np.arange(cluster_n))
             color_bar.set_ticklabels([f"Sense {sense_number}" for sense_number in range(cluster_n)])
-        plt.title(f"UMAP embedded {word}")
+        plt.title(f"UMAP embedded BIRCH clustered {word}")
 
         plt.figure(fig_idx + len(languages) * lang_idx)
         _, ax = plt.subplots(1, figsize=(14, 10))

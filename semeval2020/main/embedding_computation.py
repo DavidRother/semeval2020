@@ -12,8 +12,8 @@ import tqdm
 #  Config Parameter ####################
 ########################################
 
-language = 'swedish'
-corpus = "corpus1"
+language = 'german'
+corpus = "corpus2"
 
 base_path = "../../trial_data_public/"
 model_string = "bert-base-multilingual-cased"

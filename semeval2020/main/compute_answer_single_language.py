@@ -9,12 +9,13 @@ from sklearn.cluster import KMeans
 from kneed import KneeLocator
 from scipy.spatial import distance
 from semeval2020.model import clustering
+import pprint
 
 ########################################
 #  Config Parameter ####################
 ########################################
 
-languages = ['swedish']
+languages = ['german']
 corpora = ["corpus1", "corpus2"]
 
 base_path = "../../semeval2020/embedding_data/"
@@ -56,7 +57,8 @@ for lang_idx, language in enumerate(languages):
         task_2_answer = distance.jensenshannon(sense_frequencies[0], sense_frequencies[1], 2.0)
         answer_dict[language][word] = {"task_1_answer": task_1_answer, "task_2_answer": task_2_answer}
 
-
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(answer_dict)
 print('done')
 
 

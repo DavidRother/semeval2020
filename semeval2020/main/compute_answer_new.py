@@ -33,7 +33,7 @@ model_config = "DBSCAN"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("english", "german", "swedish", "latin")
+languages = ("english",)
 corpora = ("corpus1", "corpus2")
 
 ################################################
