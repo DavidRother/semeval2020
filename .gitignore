@@ -111,4 +111,13 @@ Workbench/
 
 # /semeval2020/embedding_data/
 /semeval2020/embedding_data/**/*.csv
-
+.data
+data/*
+/data/*
+/data/**/*.csv
+/data/sentence_data/*
+data
+data/sentence_data
+/data/sentence_data/
+/data/sentence_data/latin/**/*.csv
+data/sentence_data/**/**/*.csv

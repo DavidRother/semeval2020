@@ -14,3 +14,7 @@ class AbstractModel(ABC):
     @abstractmethod
     def predict(self, data, **kwargs):
         raise NotImplementedError()
+
+    @abstractmethod
+    def fit_predict_labeling(self, data, **kwargs):
+        raise NotImplementedError()

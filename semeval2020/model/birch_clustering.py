@@ -1,22 +1,22 @@
 from semeval2020.factory_hub import abstract_model, model_factory
 from scipy.spatial import distance
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import Birch
 import numpy as np
 
 
-class MyDBSCAN(abstract_model.AbstractModel):
+class MyBIRCH(abstract_model.AbstractModel):
 
-    def __init__(self, eps=1, min_samples=5):
-        self.dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    def __init__(self, n_clusters=None, threshold=0.5, branching_factor=50):
+        self.birch = Birch(n_clusters=n_clusters, threshold=threshold, branching_factor=branching_factor)
 
     def fit(self, data):
-        self.dbscan.fit(data)
+        self.birch.fit(data)
 
     def fit_predict(self, data, embedding_epochs_labeled=None):
         return self.predict(data, embedding_epochs_labeled)
 
     def predict(self, data, embedding_epochs_labeled=None):
-        labels = self.dbscan.fit_predict(data)
+        labels = self.birch.fit_predict(data)
         epoch_labels = set(embedding_epochs_labeled)
         sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
         task_1_answer = int(any([True for sd in sense_frequencies if 0 in sense_frequencies[sd]]))
@@ -27,7 +27,8 @@ class MyDBSCAN(abstract_model.AbstractModel):
         return task_1_answer, task_2_answer
 
     def fit_predict_labeling(self, data, **kwargs):
-        return self.dbscan.fit_predict(data)
+        self.fit(data)
+        return self.birch.predict(data)
 
     @staticmethod
     def compute_cluster_sense_frequency(cluster_labels, embeddings_epoch_label, epoch_labels):
@@ -44,4 +45,4 @@ class MyDBSCAN(abstract_model.AbstractModel):
         return sense_frequencies
 
 
-model_factory.register("DBSCAN", MyDBSCAN)
+model_factory.register("BIRCH", MyBIRCH)

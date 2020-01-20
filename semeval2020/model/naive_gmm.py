@@ -27,6 +27,10 @@ class NaiveGMM(abstract_model.AbstractModel):
         task_2_answer = distance.jensenshannon(sense_frequencies[0], sense_frequencies[1], 2.0)
         return task_1_answer, task_2_answer
 
+    def fit_predict_labeling(self, data, **kwargs):
+        self.fit(data)
+        return self.gmm.predict(data)
+
     def _find_clustering(self, data):
         sum_of_squared_distances = []
         K = range(1, min(len(data) + 1, 5))

@@ -1,3 +1,7 @@
+from semeval2020.factory_hub import data_loader_factory, evaluation_suite_factory, model_factory
+from semeval2020.factory_hub import preprocessor_factory, config_factory
+from semeval2020.util import util
+
 import umap
 import numpy as np
 
@@ -14,7 +18,7 @@ from numba import NumbaPerformanceWarning
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 
-# Because having multiple scatters in one plot is too much work
+# Because having multiple scatters in one plot is too much work as an official API
 def mscatter(x,y, ax=None, m=None, **kw):
     import matplotlib.markers as mmarkers
     if not ax: ax=plt.gca()
@@ -33,13 +37,29 @@ def mscatter(x,y, ax=None, m=None, **kw):
     return sc
 
 
-########################################
-#  Config Parameter ####################
-########################################
+################################################
+# Pipeline architecture ########################
+################################################
+
+data_load = "embedding_loader"
+model_name = "BIRCH"
+preprocessing_method = "UMAP"
+
+################################################
+# Configs ######################################
+################################################
+
+config_paths = "ProjectPaths"
+
+################################################
+# Task Specifications ##########################
+################################################
+
+tasks = ("task1", "task2")
+languages = ("english",)
+corpora = ("corpus1", "corpus2")
 
 # 'german', "swedish", "latin", "english"
-languages = ['english']
-corpora = ["corpus1", "corpus2"]
 
 base_path = "../../data/embedding_data/"
 
@@ -47,9 +67,14 @@ base_path = "../../data/embedding_data/"
 #  Code ################################
 ########################################
 
+paths = config_factory.get_config(config_paths)
+
 corpora_to_load = list(itertools.product(languages, corpora))
-corpora_embeddings = {f"{language}_{corpus}": EmbeddingLoader(base_path, language=language, corpus=corpus)
+corpora_embeddings = {f"{language}_{corpus}":
+                      data_loader_factory.create_data_loader(data_load, base_path=paths["embedding_data_path"],
+                                                             language=language, corpus=corpus)
                       for language, corpus in corpora_to_load}
+
 label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
 marker_encoding = {0: '+', 1: "*"}
 colors = ['black', 'red', 'orange', 'blue', 'gray', 'salmon', 'wheat', 'navy']
@@ -70,12 +95,15 @@ for lang_idx, language in enumerate(languages):
         print(word)
 
         x_data = np.vstack(word_embeddings)
-        umap_instance = umap.UMAP(n_neighbors=10, min_dist=0.05, n_components=2, metric='cosine')
-        umap_embedded_data = umap_instance.fit_transform(x_data)
+        preprocessor = preprocessor_factory.create_preprocessor(preprocessing_method,
+                                                                **config_factory.get_config(preprocessing_method))
+        preprocessed_data = preprocessor.fit_transform(x_data)
 
-        clustering = Birch(n_clusters=None, threshold=1).fit(umap_embedded_data)
-        labels = np.asarray(clustering.labels_)
-        if -1 in clustering.labels_:
+        model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
+        labels = model.fit_predict_labeling(preprocessed_data)
+        noise = False
+        if -1 in labels:
+            noise = True
             print(f"Noise points in the first sense for word {word}")
 
         cluster_n = len(set(labels))
@@ -83,23 +111,23 @@ for lang_idx, language in enumerate(languages):
         sns.set(style='white', context='poster')
         _, ax = plt.subplots(1, figsize=(14, 10))
         markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
-        mscatter(umap_embedded_data[:, 0], umap_embedded_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral', alpha=1.0)
+        mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral', alpha=1.0)
         plt.setp(ax, xticks=[], yticks=[])
         if cluster_n > 1:
             color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
             color_bar.set_ticks(np.arange(cluster_n))
             color_bar.set_ticklabels([f"Sense {sense_number}" for sense_number in range(cluster_n)])
-        plt.title(f"UMAP embedded BIRCH clustered {word}")
+        plt.title(f"{preprocessing_method} embedded {model_name} clustered {word}")
 
         plt.figure(fig_idx + len(languages) * lang_idx)
         _, ax = plt.subplots(1, figsize=(14, 10))
-        plt.scatter(umap_embedded_data[:, 0], umap_embedded_data[:, 1], c=embeddings_label_encoded,
+        plt.scatter(preprocessed_data[:, 0], preprocessed_data[:, 1], c=embeddings_label_encoded,
                     cmap='Spectral', alpha=1.0)
         plt.setp(ax, xticks=[], yticks=[])
         color_bar = plt.colorbar(boundaries=np.arange(len(corpora) + 1) - 0.5)
         color_bar.set_ticks(np.arange(len(corpora)))
         color_bar.set_ticklabels(corpora)
-        plt.title(f"UMAP embedded {word}")
+        plt.title(f"{preprocessing_method} embedded {word}")
 
 plt.show()
 

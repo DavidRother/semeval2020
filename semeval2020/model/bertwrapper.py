@@ -8,8 +8,8 @@ class BertWrapper:
 
     def __init__(self, model_string='bert-base-multilingual-cased'):
         self.model_string = model_string
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case=False)
-        self.model = BertModel.from_pretrained('bert-base-multilingual-cased')
+        self.tokenizer = BertTokenizer.from_pretrained(self.model_string, do_lower_case=False)
+        self.model = BertModel.from_pretrained(self.model_string)
 
     def enter_eval_mode(self):
         self.model.eval()
