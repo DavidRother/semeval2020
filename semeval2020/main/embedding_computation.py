@@ -13,7 +13,7 @@ import tqdm
 ########################################
 
 language = 'english'
-corpus = "corpus1"
+corpus = "corpus2"
 
 base_path = "../../trial_data_public/"
 model_string = "bert-base-cased"
@@ -56,9 +56,13 @@ for tokenized_sentence, target_word_idx_dict in tqdm.tqdm(tokenized_target_sente
         sent = ' '.join(tokenized_sentence)
         target_sentences_dict[target].extend([sent] * len(embeddings))
 
+os.makedirs(base_out_path, exist_ok=True)
+
 for target, target_embeddings in target_embeddings_dict.items():
     df = pd.DataFrame.from_records(target_embeddings)
     df.to_csv(f"{base_out_path}{target}.csv")
+
+os.makedirs(sentence_output_final_path, exist_ok=True)
 
 for target, target_sentences in target_sentences_dict.items():
     df = pd.DataFrame(target_sentences)
