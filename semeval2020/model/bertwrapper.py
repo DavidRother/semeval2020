@@ -36,6 +36,18 @@ class BertWrapper:
                        tokenized_target_words[word]] for word in word_to_index}
             yield tokenized_text, word_to_idx_dict
 
+    def tokenize_sentences_direct_mapping(self, sentences, word_array, word_to_index=None):
+        word_to_index = word_to_index or []
+        sentences = list(sentences)
+        tokenized_target_words = {word: self.tokenizer.tokenize(word) for word in word_to_index}
+        for sentence, target_word in zip(sentences, word_array):
+            tokenized_text = self.tokenizer.tokenize(' '.join(["[CLS]"] + sentence + ["[SEP]"]))
+            word_to_idx_dict = {target_word: [(i, i + len(tokenized_target_words[target_word]))
+                                              for i, tok in enumerate(tokenized_text)
+                                              if tokenized_text[i: i + len(tokenized_target_words[target_word])] ==
+                                              tokenized_target_words[target_word]]}
+            yield tokenized_text, word_to_idx_dict
+
     def get_tokenized_input_ids(self, tokenized_text, padding_length):
         return pad_sequences([self.tokenizer.convert_tokens_to_ids(tokenized_text)], maxlen=padding_length,
                              dtype="long", truncating="post", padding="post")[0]

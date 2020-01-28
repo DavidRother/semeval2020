@@ -29,6 +29,9 @@ class MyDBSCAN(abstract_model.AbstractModel):
     def fit_predict_labeling(self, data, **kwargs):
         return self.dbscan.fit_predict(data)
 
+    def predict_labeling(self, data, **kwargs):
+        raise NotImplementedError()
+
     @staticmethod
     def compute_cluster_sense_frequency(cluster_labels, embeddings_epoch_label, epoch_labels):
         n_cluster = len(set(cluster_labels))

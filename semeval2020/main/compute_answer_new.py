@@ -25,8 +25,6 @@ preprocessing_method = "UMAP"
 ################################################
 
 config_paths = "ProjectPaths"
-preprocessing_config = "UMAP"
-model_config = "DBSCAN"
 
 ################################################
 # Task Specifications ##########################
@@ -70,10 +68,10 @@ for lang_idx, language in enumerate(languages):
         x_data = np.vstack(word_embeddings)
 
         preprocessor = preprocessor_factory.create_preprocessor(preprocessing_method,
-                                                                **config_factory.get_config(preprocessing_config))
+                                                                **config_factory.get_config(preprocessing_method))
         preprocessed_data = preprocessor.fit_transform(x_data)
 
-        model = model_factory.create_model(model_name, **config_factory.get_config(model_config))
+        model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
         task_1_answer, task_2_answer = model.fit_predict(preprocessed_data,
                                                          embedding_epochs_labeled=embeddings_label_encoded)
 

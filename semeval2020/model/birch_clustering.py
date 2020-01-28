@@ -30,6 +30,9 @@ class MyBIRCH(abstract_model.AbstractModel):
         self.fit(data)
         return self.birch.predict(data)
 
+    def predict_labeling(self, data, **kwargs):
+        return self.birch.predict(data)
+
     @staticmethod
     def compute_cluster_sense_frequency(cluster_labels, embeddings_epoch_label, epoch_labels):
         n_cluster = len(set(cluster_labels))

@@ -13,11 +13,11 @@ paths = {"embedding_data_path": "../../data/embedding_data/",
 
 naive_gmm = {"n_components": 4, "covariance_type": "diag", "reg_covar": 1e-3}
 
-umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
+umap = {"n_neighbors": 5, "min_dist": 0.01, "metric": 'cosine', "n_components": 2}
 
 dbscan = {"eps": 0.8, "min_samples": 5}
 
-birch = {"n_clusters": None, "threshold": 1.1, "branching_factor": 50}
+birch = {"n_clusters": None, "threshold": 1.5, "branching_factor": 100}
 
 
 config_factory.register("ProjectPaths", paths)
