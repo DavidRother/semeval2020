@@ -65,7 +65,7 @@ sentence_out_path = "../../data/sentence_data/"
 max_length_sentence = 200
 padding_length = 256
 
-num_words = 1500
+num_words = 1000
 
 ########################################
 #  Code ################################
@@ -121,25 +121,15 @@ for fig_idx, word in enumerate(target_words):
         noise = True
         print(f"Noise points in the first sense for word {word}")
 
-    sense_to_label_dict = {}
     sense_set = set([sense for senses in word_to_sentences_senses[word]['senses'] for sense in senses])
     word_senses = word_to_sentences_senses[word]['senses']
     sense_to_num = {s: idx for idx, s in enumerate(sense_set)}
-    for sense in sense_set:
-        index_filter = [sense in instance_senses for instance_senses in word_senses]
-        filtered_labels = list(compress(labels, index_filter))
-        sense_to_label_dict[sense] = max(set(filtered_labels), key=filtered_labels.count)
 
     label_to_sense = {}
     for lab in set(labels):
         index_filter = [lab == l for l in labels]
         filtered_senses = [s[0] for s in list(compress(word_senses, index_filter))]
         label_to_sense[lab] = max(set(filtered_senses), key=filtered_senses.count)
-
-    label_translation = defaultdict(list)
-    for sense in sense_set:
-        s = sense[0]
-        label_map = [lab for lab, sen in label_to_sense.items() if sen == s]
 
     predicted_labels = [sense_to_num[label_to_sense[label]] for label in labels]
     true_labels = [sense_to_num[senses_[0]] for senses_ in word_senses]
@@ -174,9 +164,9 @@ for fig_idx, word in enumerate(target_words):
           f'Distinct Sense Clusters {len(set(predicted_labels))}')
     print(f"Accuracy: {accuracy_score(true_labels, predicted_labels)}")
     print(f"Normalized Mutual Information Score {normalized_mutual_info_score(true_labels, labels)}")
-    if len(set(predicted_labels)) > 1:
-        print(f"Roc Auc Score: {roc_auc_score(true_labels, predicted_labels)}")
-        print(f"F1 Score: {f1_score(true_labels, predicted_labels)}")
+    # if len(set(predicted_labels)) > 1:
+    #     print(f"Roc Auc Score: {roc_auc_score(true_labels, predicted_labels)}")
+    #     print(f"F1 Score: {f1_score(true_labels, predicted_labels)}")
     print(f"Confusion matrix: ")
     print(confusion_matrix(true_labels, predicted_labels))
     print('')
