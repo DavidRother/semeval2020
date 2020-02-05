@@ -64,20 +64,37 @@ Here is something regarding semanitc change \cite{schlechtweg2018diachronic}
 
 \subsection{Diachronic Lexical Semantic Change}
 With an increasing interest in Diachronic Lexical Semantic Change (LSC)  
-there is a multitude of approaches. 
-Three different word representations are commonly used. 
+there is a multitude of approaches and 
+three different word representations are commonly used \cite{schlechtweg2019wind}. \newline
 First are semantic vector representations such as word2vec \cite{mikolov2013efficient},
 which represents each word with two different vectors for each time period respectively \cite{hamilton2016cultural,hamilton2016diachronic}.
-The vectors itself represent the co-occurence statistics of the word in the given time period.
-\cite{frermann2016bayesian} use 
-bayesian learning 
+The vectors itself represent the co-occurence statistics of the word in the given time period. \newline
+Second is the use ditributional representations of words. To this end
+\cite{frermann2016bayesian} use bayesian learning. \newline
+Third is 
 
-\subsection{Diachronic Word Embeddings}
+\subsection{Word Sense Disambiguation}
 
 \subsection{Unsupervised Knowledge-free Sense Modelling}
 
 
 \section{Corpora}
+
+\begin{table}[h!]
+  \label{corpora_epochs}
+  \begin{tabular}{|l|l|l|}
+  \hline
+          & t1        & t2        \\ \hline
+  English & 1810-1860 & 1960-2010 \\ \hline
+  German  & 1810-1860 & 1945-1990 \\ \hline
+  Swedish & 1800-1830 & 1900-1925 \\ \hline
+  Latin   & -200-0    & 0-2000    \\ \hline
+  \end{tabular}
+\end{table}
+
+The Corpora for evaluation are from the SEMEVAL 2020 Task 1: "Unsupervised Lexical Semantic Change Detection".
+They contain lemmatized text for english, german, swedish and latin. For each language two corpora are available from two distinct time periods.
+The respective Time periods can be seen in ref to table.
 
 \section{Framework}
 
