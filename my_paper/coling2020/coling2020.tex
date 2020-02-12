@@ -33,16 +33,11 @@
 % in the camera-ready version and ask you to change it back.
 
 
-\title{DismemBERT: Detecting Diachronic Lexical Semantic Change Using BERT Embeddings in an Unsupervised Knowledge-Free Setting}
+\title{DismemBERT: Detecting Diachronic Lexical Semantic Change Using BERT Embeddings}
 
 \author{David Rother \\
   TU Darmstadt \\
-  {\tt david.rother@stud.tu-darmstadt.de} \\\And
-  Thomas Haider \\
-  {\tt thomas.haider@ae.mpg.de} \\\And
-  Steffen Eger \\
-  {\tt eger@aiphes.tu-darmstadt.de} \\}
-
+  {\tt david.rother@stud.tu-darmstadt.de} \\}
 \date{}
 
 \begin{document}
@@ -69,14 +64,23 @@ three different word representations are commonly used \cite{schlechtweg2019wind
 First are semantic vector representations such as word2vec \cite{mikolov2013efficient},
 which represents each word with two different vectors for each time period respectively \cite{hamilton2016cultural,hamilton2016diachronic}.
 The vectors itself represent the co-occurence statistics of the word in the given time period. \newline
-Second is the use ditributional representations of words. To this end
-\cite{frermann2016bayesian} use bayesian learning. \newline
-Third is 
+Second is the use ditributional representations of words. 
+A word is represented as a vector over all other words occuring in its context.
+The actual distribution can then be obtained by the word-context co-occurence matrix.
+To learn these distributions \cite{frermann2016bayesian} use bayesian learning. \newline
+Third are sense clusters where each occurence of a word is assigned to a sense cluster.
+The clustering usually happens according to some contextual property \cite{mitra2015automatic}.
+In newer approaches powerful pretrained deep neural networks such as BERT \cite{hu2019diachronic,devlin2018bert}
+are used to extract directly a contextual token of a word from a sentence.
 
 \subsection{Word Sense Disambiguation}
 
-\subsection{Unsupervised Knowledge-free Sense Modelling}
-
+Word Sense Disambiguation (WSD) is the task of finding different word senses of the same word in sentences.
+Supervised WSD has sense annotated data and a system usually directly tries to learn
+Sense Embeddings. 
+The major disadvantage using this approach is that annotating data is very expensive and usually a sufficient amount of data can not be provided. \newline
+Unsupervised learning on the other side does not suffer from such constraints. There either leverages 
+some kind of knowledge base such as BabelNet or WordNet, or use a knowledge free model that induces senses \cite{panchenko2017unsupervised}.
 
 \section{Corpora}
 
@@ -94,14 +98,51 @@ Third is
 
 The Corpora for evaluation are from the SEMEVAL 2020 Task 1: "Unsupervised Lexical Semantic Change Detection".
 They contain lemmatized text for english, german, swedish and latin. For each language two corpora are available from two distinct time periods.
-The respective Time periods can be seen in ref to table.
+The respective Time periods can be seen in ref to table. The english corpus is a cleaned version of the COHA corpus \cite{davies2002corpus}, 
+where the corpus has been transformed and every tenth word is replaced by an @. The organizers split the sentences at these tokens and removed them.
+The german corpus uses the DTA corpus, the BZ ,and the ND corpus. 
 
 \section{Framework}
 
+In this section we present our framework to solve the SemEval 2020 Task 1. 
+We select to apply the same pipeline to all four languages. For each language we have two corpora
+given and a list of words to compute the LSC on. Since no further fine tuning is done on the provided 
+corpus data we avoid having to align the resulting embedding spaces and it can even be shown that fine tuning may be decreasing
+with small corpora \cite{giulianelli2019lexical} probably due to overfitting. 
+
+\subsection{Contextualized Embeddings}
+
+We start by computing the contextualized embeddings for each word. To that end we use 
+the Huggingface implementation \cite{Wolf2019HuggingFacesTS}. For the english corpus we compute the embeddings using the
+bert-base-cased model. The german embeddings are computed with the bert-base-german-cased
+pretrained model and swedish and latin embeddings are computed using the bert-base-multilingual-cased model that uses the 104 languages with the largest wikipedias.
+
+\subsection{Preprocessing}
+
+To be able to do efficient clustering on the contextualized embeddings we use a preprocessing pipeline to
+enhance later results. 
+As a starting point \cite{reif2019visualizing} show that BERT embeddings projected with UMAP \cite{mcinnes2018umap}, a type of manifold learning similar to t-SNE,
+produces distinct clusters of the different word senses. 
+Furthermore, \cite{mcconville2019n2d} show that using an autoencoder in conjunction with UMAP
+leads to higher quality clusterings and that their approach is competetive with other unsupervised deep learning clustering methods.
+We decide to adopt the latter pipeline and choose a similar autoencoder network with the only change being that we fix the dimension of the latent representation space to be 20 for all words
+since we have no knowledge of the true amount of senses beforehand.
+
+
 \section{Experiments}
+
+In the SemEval-2020 Task 1 challenge there are two different sub-tasks to solve. 
+In the first task one has to decide wether a word has either gained or lost a sense or 
+if the senses remained the same between two time periods. And in the second task the model 
+has to rank words based on the magnitude of change they did undergo. 
+The task organizers quantified the amount of semantic change by constructing a sense frequency distribution
+for both epochs by human experts. The change score is then the jensen-shannon frequency divergence of the two resulting distributions.
+
 \section{Evaluation} 
-Hi
+The score is ok.
+
 \section{Conclusion}
+This needs work.
 
 % include your own bib file like this:
 \bibliographystyle{acl}

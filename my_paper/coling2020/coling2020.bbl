@@ -1,11 +1,33 @@
 \begin{thebibliography}{}
 
+\bibitem[\protect\citename{Davies}2002]{davies2002corpus}
+Mark Davies.
+\newblock 2002.
+\newblock {\em The Corpus of Historical American English (COHA): 400 million
+  words, 1810-2009}.
+\newblock Brigham Young University.
+
+\bibitem[\protect\citename{Devlin \bgroup et al.\egroup }2018]{devlin2018bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock 2018.
+\newblock Bert: Pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock {\em arXiv preprint arXiv:1810.04805}.
+
 \bibitem[\protect\citename{Frermann and Lapata}2016]{frermann2016bayesian}
 Lea Frermann and Mirella Lapata.
 \newblock 2016.
 \newblock A bayesian model of diachronic meaning change.
 \newblock {\em Transactions of the Association for Computational Linguistics},
   4:31--45.
+
+\bibitem[\protect\citename{Giulianelli}2019]{giulianelli2019lexical}
+Mario Giulianelli.
+\newblock 2019.
+\newblock Lexical semantic change analysis with contextualised word
+  representations.
+\newblock {\em Unpublished master’s thesis, University of Amsterdam,
+  Amsterdam}.
 
 \bibitem[\protect\citename{Hamilton \bgroup et al.\egroup
   }2016a]{hamilton2016cultural}
@@ -25,12 +47,63 @@ William~L Hamilton, Jure Leskovec, and Dan Jurafsky.
   change.
 \newblock {\em arXiv preprint arXiv:1605.09096}.
 
+\bibitem[\protect\citename{Hu \bgroup et al.\egroup }2019]{hu2019diachronic}
+Renfen Hu, Shen Li, and Shichen Liang.
+\newblock 2019.
+\newblock Diachronic sense modeling with deep contextualized word embeddings:
+  An ecological view.
+\newblock In {\em Proceedings of the 57th Annual Meeting of the Association for
+  Computational Linguistics}, pages 3899--3908.
+
+\bibitem[\protect\citename{McConville \bgroup et al.\egroup
+  }2019]{mcconville2019n2d}
+Ryan McConville, Raul Santos-Rodriguez, Robert~J Piechocki, and Ian Craddock.
+\newblock 2019.
+\newblock N2d:(not too) deep clustering via clustering the local manifold of an
+  autoencoded embedding.
+\newblock {\em arXiv preprint arXiv:1908.05968}.
+
+\bibitem[\protect\citename{McInnes \bgroup et al.\egroup
+  }2018]{mcinnes2018umap}
+Leland McInnes, John Healy, and James Melville.
+\newblock 2018.
+\newblock Umap: Uniform manifold approximation and projection for dimension
+  reduction.
+\newblock {\em arXiv preprint arXiv:1802.03426}.
+
 \bibitem[\protect\citename{Mikolov \bgroup et al.\egroup
   }2013]{mikolov2013efficient}
 Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
 \newblock 2013.
 \newblock Efficient estimation of word representations in vector space.
 \newblock {\em arXiv preprint arXiv:1301.3781}.
+
+\bibitem[\protect\citename{Mitra \bgroup et al.\egroup
+  }2015]{mitra2015automatic}
+Sunny Mitra, Ritwik Mitra, Suman~Kalyan Maity, Martin Riedl, Chris Biemann,
+  Pawan Goyal, and Animesh Mukherjee.
+\newblock 2015.
+\newblock An automatic approach to identify word sense changes in text media
+  across timescales.
+\newblock {\em Natural Language Engineering}, 21(5):773--798.
+
+\bibitem[\protect\citename{Panchenko \bgroup et al.\egroup
+  }2017]{panchenko2017unsupervised}
+Alexander Panchenko, Eugen Ruppert, Stefano Faralli, Simone~Paolo Ponzetto, and
+  Chris Biemann.
+\newblock 2017.
+\newblock Unsupervised does not mean uninterpretable: The case for word sense
+  induction and disambiguation.
+\newblock Association for Computational Linguistics.
+
+\bibitem[\protect\citename{Reif \bgroup et al.\egroup
+  }2019]{reif2019visualizing}
+Emily Reif, Ann Yuan, Martin Wattenberg, Fernanda~B Viegas, Andy Coenen, Adam
+  Pearce, and Been Kim.
+\newblock 2019.
+\newblock Visualizing and measuring the geometry of bert.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  8592--8600.
 
 \bibitem[\protect\citename{Schlechtweg \bgroup et al.\egroup
   }2018]{schlechtweg2018diachronic}
@@ -48,5 +121,15 @@ Dominik Schlechtweg, Anna H{\"a}tty, Marco del Tredici, and Sabine Schulte~im
 \newblock A wind of change: Detecting and evaluating lexical semantic change
   across times and domains.
 \newblock {\em arXiv preprint arXiv:1906.02979}.
+
+\bibitem[\protect\citename{Wolf \bgroup et al.\egroup
+  }2019]{Wolf2019HuggingFacesTS}
+Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, Clement Delangue,
+  Anthony Moi, Pierric Cistac, Tim Rault, R'emi Louf, Morgan Funtowicz, and
+  Jamie Brew.
+\newblock 2019.
+\newblock Huggingface's transformers: State-of-the-art natural language
+  processing.
+\newblock {\em ArXiv}, abs/1910.03771.
 
 \end{thebibliography}

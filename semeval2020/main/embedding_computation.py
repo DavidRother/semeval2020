@@ -12,14 +12,14 @@ import tqdm
 #  Config Parameter ####################
 ########################################
 
-language = 'english'
-corpus = "corpus2"
+language = 'german'
+corpus = "corpus1"
 
 base_path = "../../trial_data_public/"
-model_string = "bert-base-cased"
+model_string = "bert-base-multilingual-cased"
 
-output_path = "../../data/embedding_data/"
-sentence_out_path = "../../data/sentence_data/"
+output_path = "../../data/embedding_data_old/"
+sentence_out_path = "../../data/sentence_data_old/"
 
 max_length_sentence = 200
 padding_length = 256

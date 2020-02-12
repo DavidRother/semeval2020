@@ -1,6 +1,7 @@
 from semeval2020.factory_hub import abstract_model, model_factory
 from scipy.spatial import distance
 from sklearn.cluster import DBSCAN
+from itertools import compress
 import numpy as np
 
 
@@ -18,7 +19,13 @@ class MyDBSCAN(abstract_model.AbstractModel):
     def predict(self, data, embedding_epochs_labeled=None):
         labels = self.dbscan.fit_predict(data)
         epoch_labels = set(embedding_epochs_labeled)
-        sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
+        if -1 in epoch_labels:
+            indexer = [label != -1 for label in labels]
+            labels = list(compress(labels, indexer))
+            embedding_epochs_labeled = list(compress(embedding_epochs_labeled, indexer))
+            sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
+        else:
+            sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
         task_1_answer = int(any([True for sd in sense_frequencies if 0 in sense_frequencies[sd]]))
         task_2_answer = distance.jensenshannon(sense_frequencies[0], sense_frequencies[1], 2.0)
         if np.isnan(task_2_answer):

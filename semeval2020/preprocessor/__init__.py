@@ -1,1 +1,1 @@
-from semeval2020.preprocessor import umap_preprocessor, ae_preprocessor
+from semeval2020.preprocessor import umap_preprocessor, ae_preprocessor, tsne_preprocessor

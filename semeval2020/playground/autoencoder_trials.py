@@ -66,7 +66,7 @@ sentence_out_path = "../../data/sentence_data/"
 max_length_sentence = 200
 padding_length = 256
 
-num_words = 1000
+num_words = 10
 
 ########################################
 #  Code ################################
