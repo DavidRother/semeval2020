@@ -121,3 +121,5 @@ data/sentence_data
 /data/sentence_data/
 /data/sentence_data/latin/**/*.csv
 data/sentence_data/**/**/*.csv
+/old_task_data/
+/data/german_old/

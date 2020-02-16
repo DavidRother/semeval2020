@@ -16,7 +16,7 @@ language = 'german'
 corpus = "corpus2"
 
 base_path = "../../old_task_data/"
-model_string = "bert-base-multilingual-cased"
+model_string = "bert-base-german"
 
 output_path = "../../data/embedding_data_old/"
 sentence_out_path = "../../data/sentence_data_old/"

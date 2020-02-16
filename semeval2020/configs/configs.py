@@ -19,13 +19,15 @@ naive_gmm = {"n_components": 10, "covariance_type": "diag", "reg_covar": 1e-3}
 
 umap = {"n_neighbors": 10, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
 
-umap_ae = {"n_neighbors": 20, "min_dist": 0.0, "metric": 'euclidean', "n_components": 5}
+umap_ae = {"n_neighbors": 20, "min_dist": 0.0, "metric": 'euclidean', "n_components": 10}
 
 dbscan = {"eps": 0.8, "min_samples": 5}
 
 birch = {"n_clusters": None, "threshold": 1.1, "branching_factor": 300}
 
-auto_encoder = {"learning_rate": 1e-3, "weight_decay": 1e-5, "num_epochs": 1000, "batch_size": 128, "input_size": 768}
+dbscan_birch = {"eps": 0.8, "min_samples": 5, "threshold": 1.1, "branching_factor": 50}
+
+auto_encoder = {"learning_rate": 1e-3, "weight_decay": 1e-5, "num_epochs": 100, "batch_size": 128, "input_size": 768}
 
 t_sne = {"n_components": 2, "perplexity": 50, "metric": "cosine"}
 
@@ -41,3 +43,4 @@ config_factory.register("BIRCH", birch)
 config_factory.register("AutoEncoder", auto_encoder)
 config_factory.register("TSNE", t_sne)
 config_factory.register("TSNE_AE", t_sne_ae)
+config_factory.register("DBSCAN_BIRCH", dbscan_birch)

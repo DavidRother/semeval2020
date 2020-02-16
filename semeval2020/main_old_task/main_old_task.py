@@ -7,6 +7,7 @@ import itertools
 import warnings
 import pprint
 import numpy as np
+import tqdm
 from numba import NumbaPerformanceWarning
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -17,7 +18,7 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 ################################################
 
 data_load = "embedding_loader"
-model_name = "DBSCAN"
+model_name = "DBSCAN_BIRCH"
 preprocessing_method = "UMAP"
 
 ################################################
@@ -57,7 +58,7 @@ for lang_idx, language in enumerate(languages):
     answer_dict["task1"][language] = {}
     answer_dict["task2"][language] = {}
 
-    for fig_idx, word in enumerate(target_words):
+    for fig_idx, word in tqdm.tqdm(enumerate(target_words)):
         word_embeddings = []
         embeddings_label_encoded = []
         for emb_loader in emb_loaders:
@@ -72,8 +73,7 @@ for lang_idx, language in enumerate(languages):
                                                                 **config_factory.get_config("AutoEncoder"))
         preprocessed_data = preprocessor.fit_transform(x_data)
 
-        preprocessor = preprocessor_factory.create_preprocessor("UMAP",
-                                                                **config_factory.get_config("UMAP_AE"))
+        preprocessor = preprocessor_factory.create_preprocessor("UMAP", **config_factory.get_config("UMAP_AE"))
         x_data = preprocessor.fit_transform(x_data)
 
         model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
