@@ -40,6 +40,7 @@ corpora = ("corpus1", "corpus2")
 ################################################
 
 paths = config_factory.get_config(config_paths)
+task_params = config_factory.get_config("TaskParameter")
 
 corpora_to_load = list(itertools.product(languages, corpora))
 corpora_embeddings = {f"{language}_{corpus}":
@@ -57,27 +58,27 @@ for lang_idx, language in enumerate(languages):
     target_words = emb_loaders[0].target_words
     answer_dict["task1"][language] = {}
     answer_dict["task2"][language] = {}
+    k = task_params[language]["k"]
+    n = task_params[language]["n"]
 
     for fig_idx, word in tqdm.tqdm(enumerate(target_words)):
-        word_embeddings = []
+        file1 = f"{paths['auto_embedding_data_path_old2']}{language}/corpus1/{word}.npy"
+        auto_embedded_data1 = np.load(file1)
+        file2 = f"{paths['auto_embedding_data_path_old2']}{language}/corpus2/{word}.npy"
+        auto_embedded_data2 = np.load(file2)
         embeddings_label_encoded = []
-        for emb_loader in emb_loaders:
-            embedding = np.asarray(emb_loader[word], dtype=np.float32)
-            embedding = embedding[:, 1:]
-            word_embeddings.append(embedding)
-            embeddings_label_encoded.extend([label_encoding[emb_loader.corpus]] * len(embedding))
+        embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
+        embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
+        print(word)
 
-        x_data = np.vstack(word_embeddings)
-
-        preprocessor = preprocessor_factory.create_preprocessor("AutoEncoder",
-                                                                **config_factory.get_config("AutoEncoder"))
-        preprocessed_data = preprocessor.fit_transform(x_data)
+        x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
 
         preprocessor = preprocessor_factory.create_preprocessor("UMAP", **config_factory.get_config("UMAP_AE"))
         x_data = preprocessor.fit_transform(x_data)
 
         model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
-        task_1_answer, task_2_answer = model.fit_predict(x_data, embedding_epochs_labeled=embeddings_label_encoded)
+        task_1_answer, task_2_answer = model.fit_predict(x_data, embedding_epochs_labeled=embeddings_label_encoded,
+                                                         k=k, n=n)
 
         answer_dict["task1"][language][word] = task_1_answer
         answer_dict["task2"][language][word] = task_2_answer

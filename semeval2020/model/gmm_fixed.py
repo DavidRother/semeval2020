@@ -1,37 +1,39 @@
-from sklearn.cluster import AffinityPropagation
 from semeval2020.factory_hub import abstract_model, model_factory
+from sklearn.mixture import GaussianMixture
 from scipy.spatial import distance
-import numpy as np
 
 
-class MyAffinityPropagation(abstract_model.AbstractModel):
+class GMM(abstract_model.AbstractModel):
 
-    def __init__(self, preference=-50, damping=0.5):
-        self.ap = AffinityPropagation(preference=preference, damping=damping)
+    def __init__(self, n_components, covariance_type, reg_covar):
+        self.n_components = n_components
+        self.covariance_type = covariance_type
+        self.reg_covar = reg_covar
+        self.gmm = None
 
     def fit(self, data):
-        self.ap.fit(data)
+        self.gmm = GaussianMixture(n_components=self.n_components, covariance_type=self.covariance_type,
+                                   reg_covar=self.reg_covar)
+        self.gmm.fit(data)
 
     def fit_predict(self, data, embedding_epochs_labeled=None):
+        self.fit(data)
         return self.predict(data, embedding_epochs_labeled)
 
     def predict(self, data, embedding_epochs_labeled=None):
-        labels = self.ap.fit_predict(data)
+        labels = self.gmm.predict(data)
         epoch_labels = set(embedding_epochs_labeled)
         sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
         task_1_answer = int(any([True for sd in sense_frequencies if 0 in sense_frequencies[sd]]))
         task_2_answer = distance.jensenshannon(sense_frequencies[0], sense_frequencies[1], 2.0)
-        if np.isnan(task_2_answer):
-            task_1_answer = 0
-            task_2_answer = 0.5
         return task_1_answer, task_2_answer
 
     def fit_predict_labeling(self, data, **kwargs):
         self.fit(data)
-        return self.ap.predict(data)
+        return self.gmm.predict(data)
 
     def predict_labeling(self, data, **kwargs):
-        raise NotImplementedError()
+        return self.gmm.predict(data)
 
     @staticmethod
     def compute_cluster_sense_frequency(cluster_labels, embeddings_epoch_label, epoch_labels):
@@ -48,5 +50,5 @@ class MyAffinityPropagation(abstract_model.AbstractModel):
         return sense_frequencies
 
 
-model_factory.register("AffinityPropagation", MyAffinityPropagation)
+model_factory.register("GMM", GMM)
 

@@ -1,13 +1,13 @@
-from sklearn.cluster import AffinityPropagation
+from sklearn.cluster import AgglomerativeClustering
 from semeval2020.factory_hub import abstract_model, model_factory
 from scipy.spatial import distance
 import numpy as np
 
 
-class MyAffinityPropagation(abstract_model.AbstractModel):
+class MyAgglomerativeClustering(abstract_model.AbstractModel):
 
-    def __init__(self, preference=-50, damping=0.5):
-        self.ap = AffinityPropagation(preference=preference, damping=damping)
+    def __init__(self, n_clusters=None, distance_threshold=0.5):
+        self.ap = AgglomerativeClustering(n_clusters=n_clusters, distance_threshold=distance_threshold)
 
     def fit(self, data):
         self.ap.fit(data)
@@ -27,8 +27,7 @@ class MyAffinityPropagation(abstract_model.AbstractModel):
         return task_1_answer, task_2_answer
 
     def fit_predict_labeling(self, data, **kwargs):
-        self.fit(data)
-        return self.ap.predict(data)
+        return self.ap.fit_predict(data)
 
     def predict_labeling(self, data, **kwargs):
         raise NotImplementedError()
@@ -48,5 +47,5 @@ class MyAffinityPropagation(abstract_model.AbstractModel):
         return sense_frequencies
 
 
-model_factory.register("AffinityPropagation", MyAffinityPropagation)
+model_factory.register("AgglomerativeClustering", MyAgglomerativeClustering)
 

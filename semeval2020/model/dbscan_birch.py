@@ -1,5 +1,6 @@
 from semeval2020.factory_hub import abstract_model, model_factory
 from scipy.spatial import distance
+from semeval2020.model import model_utilities
 from sklearn.cluster import DBSCAN, Birch
 from itertools import compress
 import numpy as np
@@ -7,33 +8,29 @@ import numpy as np
 
 class MyDBSCANBIRCH(abstract_model.AbstractModel):
 
-    def __init__(self, eps=1, min_samples=5, threshold=1.1, branching_factor=50):
+    def __init__(self, eps=1, min_samples=5, threshold=1.1, branching_factor=50, max_clusters=10):
         self.dbscan = DBSCAN(eps=eps, min_samples=min_samples)
         self.threshold = threshold
         self.branching_factor = branching_factor
         self.birch = None
+        self.max_clusters = max_clusters
 
     def fit(self, data):
         labels = self.dbscan.fit_predict(data)
         num_labels = len(set(labels)) if -1 not in labels else len(set(labels)) - 1
         self.birch = Birch(n_clusters=num_labels, threshold=self.threshold, branching_factor=self.branching_factor)
 
-    def fit_predict(self, data, embedding_epochs_labeled=None):
-        return self.predict(data, embedding_epochs_labeled)
+    def fit_predict(self, data, embedding_epochs_labeled=None, k=2, n=5):
+        return self.predict(data, embedding_epochs_labeled, k=k, n=n)
 
-    def predict(self, data, embedding_epochs_labeled=None):
+    def predict(self, data, embedding_epochs_labeled=None, k=2, n=5):
         labels = self.dbscan.fit_predict(data)
         num_labels = len(set(labels)) if -1 not in labels else len(set(labels)) - 1
+        num_labels = min(self.max_clusters, num_labels)
         self.birch = Birch(n_clusters=num_labels, threshold=self.threshold, branching_factor=self.branching_factor)
         labels = self.birch.fit_predict(data)
         epoch_labels = set(embedding_epochs_labeled)
-        sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
-        task_1_answer = int(any([True for sd in sense_frequencies if 0 in sense_frequencies[sd]]))
-        task_2_answer = distance.jensenshannon(sense_frequencies[0], sense_frequencies[1], 2.0)
-        if np.isnan(task_2_answer):
-            task_1_answer = 0
-            task_2_answer = 0.5
-        return task_1_answer, task_2_answer
+        return model_utilities.compute_task_answers(labels, embedding_epochs_labeled, epoch_labels, k, n)
 
     def fit_predict_labeling(self, data, **kwargs):
         labels = self.dbscan.fit_predict(data)

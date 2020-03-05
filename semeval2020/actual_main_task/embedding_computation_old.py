@@ -12,14 +12,14 @@ import tqdm
 #  Config Parameter ####################
 ########################################
 
-language = 'german'
+language = 'swedish'
 corpus = "corpus1"
 
-base_path = "../../old_task_data/"
+base_path = "../../data/main_task_data/"
 model_string = "bert-base-multilingual-cased"  # "dbmdz/bert-base-german-cased"
 
-output_path = "../../data/embedding_data_old2/"
-sentence_out_path = "../../data/sentence_data_old2/"
+output_path = "../../data/embedding_data_semeval2020/"
+sentence_out_path = "../../data/sentence_data_semeval2020/"
 
 max_length_sentence = 70
 padding_length = 100

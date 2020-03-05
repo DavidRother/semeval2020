@@ -123,3 +123,5 @@ data/sentence_data
 data/sentence_data/**/**/*.csv
 /old_task_data/
 /data/german_old/
+/data/models/
+/data/auto_embedded_data_old2/
