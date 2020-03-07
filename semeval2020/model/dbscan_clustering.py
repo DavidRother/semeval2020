@@ -18,7 +18,7 @@ class MyDBSCAN(abstract_model.AbstractModel):
     def predict(self, data, embedding_epochs_labeled=None, k=2, n=5):
         labels = self.dbscan.fit_predict(data)
         epoch_labels = set(embedding_epochs_labeled)
-        if -1 in epoch_labels:
+        if -1 in labels:
             indexer = [label != -1 for label in labels]
             labels = list(compress(labels, indexer))
             embedding_epochs_labeled = list(compress(embedding_epochs_labeled, indexer))

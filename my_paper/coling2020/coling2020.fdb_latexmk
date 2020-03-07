@@ -1,15 +1,16 @@
 # Fdb version 3
-["bibtex coling2020"] 1581468039 "coling2020.aux" "coling2020.bbl" "coling2020" 1581468039
-  "./acl.bst" 1508010952 25098 c6a3d2887fd8745756d355478c5a86c9 ""
-  "coling2020.aux" 1581468039 1761 b2187f70db1fb35960d44e5e100768aa ""
+["bibtex coling2020"] 1581468039 "coling2020.aux" "coling2020.bbl" "coling2020" 1581504035
+  "./acl.bst" 1579526587 25098 c6a3d2887fd8745756d355478c5a86c9 ""
+  "coling2020.aux" 1581504035 1761 b2187f70db1fb35960d44e5e100768aa ""
   "coling2020.bcf" 0 -1 0 ""
-  "coling2020.bib" 1581467835 9104 22cc4135b68c0ba9ccfbfd9cd2381616 ""
+  "coling2020.bib" 1581503897 9104 22cc4135b68c0ba9ccfbfd9cd2381616 ""
   (generated)
   "coling2020.blg"
   "coling2020.bbl"
-["pdflatex"] 1581468039 "coling2020.tex" "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.pdf" "coling2020" 1581468039
-  "/etc/texmf/web2c/texmf.cnf" 1577795198 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.aux" 1581468039 1761 b2187f70db1fb35960d44e5e100768aa ""
+["pdflatex"] 1581504034 "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.tex" "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.pdf" "coling2020" 1581504035
+  "/etc/texmf/web2c/texmf.cnf" 1559029018 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.aux" 1581504035 1761 b2187f70db1fb35960d44e5e100768aa ""
+  "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.tex" 1581504032 7633 7cb0a74c9c30c7783d7936fc6552f611 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1480098666 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1480098688 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -52,15 +53,15 @@
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1480098842 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1577795242 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1577795271 4126513 eb9b06c432337d5b69be550268be1b95 ""
-  "coling2020.aux" 1581468039 1761 b2187f70db1fb35960d44e5e100768aa ""
-  "coling2020.bbl" 1581468039 5349 dea27bd1bd3c4a59603dfc5a4fa3d02c "bibtex coling2020"
-  "coling2020.sty" 1569787246 14897 73ff5b12b6bd75e8ad92d57fc34e2d57 ""
-  "coling2020.tex" 1581468038 7632 4538884814e1c30565422b5b8e0fac0d ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1580390220 2396367 416e5eec178b0463bd029c15e8a964c5 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1580390222 1672794 90a6b13f5179683746de53be160529a5 ""
+  "coling2020.aux" 1581504035 1761 b2187f70db1fb35960d44e5e100768aa ""
+  "coling2020.bbl" 1581503897 5349 dea27bd1bd3c4a59603dfc5a4fa3d02c "bibtex coling2020"
+  "coling2020.sty" 1579526587 14897 73ff5b12b6bd75e8ad92d57fc34e2d57 ""
+  "coling2020.tex" 1581504032 7633 7cb0a74c9c30c7783d7936fc6552f611 ""
   (generated)
-  "coling2020.pdf"
+  "coling2020.log"
   "coling2020.aux"
   "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.log"
-  "coling2020.log"
+  "coling2020.pdf"
   "/home/david/PycharmProjects/semeval2020/my_paper/coling2020/coling2020.pdf"

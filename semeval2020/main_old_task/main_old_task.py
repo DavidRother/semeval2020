@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 ################################################
 
 data_load = "embedding_loader"
-model_name = "DBSCAN_BIRCH"
+model_name = "HDBSCAN"
 preprocessing_method = "UMAP"
 
 ################################################

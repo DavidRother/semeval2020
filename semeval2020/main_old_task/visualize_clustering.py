@@ -44,7 +44,7 @@ def mscatter(x,y, ax=None, m=None, **kw):
 ################################################
 
 data_load = "embedding_loader"
-model_name = "DBSCAN_BIRCH"
+model_name = "HDBSCAN"
 preprocessing_method = "UMAP"
 
 ################################################
@@ -94,8 +94,8 @@ for lang_idx, language in enumerate(languages):
         print(word)
 
         x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
-        preprocessor = preprocessor_factory.create_preprocessor("TSNE",
-                                                                **config_factory.get_config("TSNE_AE"))
+        preprocessor = preprocessor_factory.create_preprocessor("UMAP",
+                                                                **config_factory.get_config("UMAP_AE"))
         preprocessed_data = preprocessor.fit_transform(x_data)
 
         model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
