@@ -20,3 +20,19 @@ def filter_for_words(sentences, target_words):
         if any((target for target in target_words if target in sentence)):
             yield sentence
 
+
+def remove_pos_tagging(sentences, target_words):
+    for sentence in sentences:
+        for word in target_words:
+            if not(word.endswith("_nn") or word.endswith("_vb")):
+                continue
+            san_word = remove_pos_tagging_word(word)
+            if word in sentence:
+                sentence = sentence.replace(word, san_word)
+        yield sentence
+
+
+def remove_pos_tagging_word(word: str):
+    if word.endswith("_nn") or word.endswith("_vb"):
+        return word[:-3]
+    return word

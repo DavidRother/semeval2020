@@ -6,6 +6,7 @@ paths = {"embedding_data_path": "../../data/embedding_data/",
          "embedding_data_path_old": "../../data/embedding_data_old/",
          "embedding_data_path_old2": "../../data/embedding_data_old2/",
          "auto_embedding_data_path_old2": "../../data/auto_embedded_data_old2/",
+         "auto_embedding_data_path_main": "../../data/auto_embedded_data_semeval2020/",
          "truth_trial_data_path": "../../trial_data_public/truth/",
          "answer_path": "../../my_results/answer/answer/",
          "answer_path_old": "../../my_results/answer_old/answer/",
@@ -36,7 +37,7 @@ birch = {"n_clusters": None, "threshold": 1.1, "branching_factor": 300}
 dbscan_birch = {"eps": 2.5, "min_samples": 5, "threshold": 1.5, "branching_factor": 30, "max_clusters": 20}
 # {"eps": 0.8, "min_samples": 3, "threshold": 1.5, "branching_factor": 30}
 
-auto_encoder = {"learning_rate": 1e-3, "weight_decay": 1e-5, "num_epochs": 100, "batch_size": 128, "input_size": 768}
+auto_encoder = {"learning_rate": 1e-3, "weight_decay": 1e-5, "num_epochs": 200, "batch_size": 128, "input_size": 768}
 
 t_sne = {"n_components": 2, "perplexity": 50, "metric": "cosine"}
 
