@@ -32,9 +32,8 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("latin", )
-corpora = ["corpus2"]
-skip = [("german", "corpus1")]
+languages = ("latin", "german", "swedish", "english")
+corpora = ["corpus1", "corpus2"]
 
 ################################################
 #  Code ########################################
@@ -52,35 +51,36 @@ answer_dict = {"task1": {}, "task2": {}}
 label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
 
 # Compute the answers
-for corpus in corpora:
-    for lang_idx, language in enumerate(languages):
-        if (language, corpus) in skip:
-            continue
-        print(f"Computing Auto Embeddings for {language}, {corpus}")
-        emb_loaders = [emb_loader for emb_loader in corpora_embeddings.values() if emb_loader.language == language
-                       and emb_loader.corpus == corpus]
-        target_words = emb_loaders[0].target_words
-        answer_dict["task1"][language] = {}
-        answer_dict["task2"][language] = {}
+for lang_idx, language in enumerate(languages):
+    print(f"Computing Auto Embeddings for {language}")
+    emb_loaders = [emb_loader for emb_loader in corpora_embeddings.values() if emb_loader.language == language]
+    target_words = emb_loaders[0].target_words
+    answer_dict["task1"][language] = {}
+    answer_dict["task2"][language] = {}
 
-        for fig_idx, word in tqdm.tqdm(enumerate(target_words)):
-            word_embeddings = []
-            embeddings_label_encoded = []
-            for emb_loader in emb_loaders:
-                embedding = np.asarray(emb_loader.lazy_load_embeddings(word), dtype=np.float32)
-                embedding = embedding[:, 1:]
-                word_embeddings.append(embedding)
-                embeddings_label_encoded.extend([label_encoding[emb_loader.corpus]] * len(embedding))
+    for fig_idx, word in tqdm.tqdm(enumerate(target_words)):
+        word_embeddings = []
+        embeddings_len = []
+        for emb_loader in emb_loaders:
+            embedding = np.asarray(emb_loader.lazy_load_embeddings(word), dtype=np.float32)
+            embedding = embedding[:, 1:]
+            word_embeddings.append(embedding)
+            embeddings_len.append(len(embedding))
 
-            x_data = np.vstack(word_embeddings)
+        x_data = np.vstack(word_embeddings)
 
-            preprocessor = preprocessor_factory.create_preprocessor("AutoEncoder",
-                                                                    **config_factory.get_config("AutoEncoder"))
-            preprocessed_data = preprocessor.fit_transform(x_data)
+        preprocessor = preprocessor_factory.create_preprocessor("AutoEncoder",
+                                                                **config_factory.get_config("AutoEncoder"))
+        preprocessed_data = preprocessor.fit_transform(x_data)
 
-            task_path = f"{paths['auto_embedding_data_path_main']}/{language}/{corpus}/"
-            os.makedirs(task_path, exist_ok=True)
+        task_path = f"{paths['auto_embedding_data_path_main']}/{language}/corpus1/"
+        os.makedirs(task_path, exist_ok=True)
 
-            np.save(task_path + word, preprocessed_data)
+        np.save(task_path + word, preprocessed_data[:embeddings_len[0]])
+
+        task_path = f"{paths['auto_embedding_data_path_main']}/{language}/corpus2/"
+        os.makedirs(task_path, exist_ok=True)
+
+        np.save(task_path + word, preprocessed_data[embeddings_len[0]:])
 
 print("done")
