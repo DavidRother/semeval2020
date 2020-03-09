@@ -32,8 +32,8 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("german", "swedish", "latin", "english")
-corpora = ["corpus1", "corpus2"]
+languages = ("latin", )
+corpora = ["corpus2"]
 skip = [("german", "corpus1")]
 
 ################################################

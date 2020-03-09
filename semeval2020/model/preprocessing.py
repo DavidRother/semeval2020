@@ -27,8 +27,7 @@ def remove_pos_tagging(sentences, target_words):
             if not(word.endswith("_nn") or word.endswith("_vb")):
                 continue
             san_word = remove_pos_tagging_word(word)
-            if word in sentence:
-                sentence = sentence.replace(word, san_word)
+            sentence[:] = [san_word if word == w else w for w in sentence]
         yield sentence
 
 

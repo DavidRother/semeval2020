@@ -25,9 +25,9 @@ naive_gmm = {"n_components": 10, "covariance_type": "diag", "reg_covar": 1e-3}
 
 gmm = {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3}
 
-umap = {"n_neighbors": 10, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
+umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
 
-umap_ae = {"n_neighbors": 7, "min_dist": 0.0001, "metric": 'cosine', "n_components": 2}
+umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
 # "n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10
 
 dbscan = {"eps": 2.5, "min_samples": 5}
