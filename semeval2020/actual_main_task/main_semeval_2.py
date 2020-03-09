@@ -7,6 +7,7 @@ import itertools
 import warnings
 import pprint
 import numpy as np
+import tqdm
 from numba import NumbaPerformanceWarning
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -16,8 +17,8 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 # Pipeline architecture ########################
 ################################################
 
-data_load = "embedding_loader"
-model_name = "DBSCAN"
+data_load = "lazy_embedding_loader"
+model_name = "HDBSCAN"
 preprocessing_method = "UMAP"
 
 ################################################
@@ -31,37 +32,45 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("english",)
+languages = ("english", "latin", "german", "swedish")
 corpora = ("corpus1", "corpus2")
 
 ################################################
 #  Code ########################################
 ################################################
 
+base_path = "../../data/main_task_data/"
+target_file = f"{base_path}targets/english.txt"
+with open(target_file, 'r', encoding='utf-8') as f_in:
+    english_target_words = [line.strip().split('\t')[0] for line in f_in]
+
 paths = config_factory.get_config(config_paths)
 
 corpora_to_load = list(itertools.product(languages, corpora))
 corpora_embeddings = {f"{language}_{corpus}":
-                      data_loader_factory.create_data_loader(data_load, base_path=paths["embedding_data_path"],
+                      data_loader_factory.create_data_loader(data_load, base_path=paths["embedding_data_path_main"],
                                                              language=language, corpus=corpus)
                       for language, corpus in corpora_to_load}
 
 answer_dict = {"task1": {}, "task2": {}}
 label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
+task_params = config_factory.get_config("TaskParameter")
 
 # Compute the answers
 
-for lang_idx, language in enumerate(languages):
+for lang_idx, language in tqdm.tqdm(enumerate(languages)):
     emb_loaders = [emb_loader for emb_loader in corpora_embeddings.values() if emb_loader.language == language]
     target_words = emb_loaders[0].target_words
     answer_dict["task1"][language] = {}
     answer_dict["task2"][language] = {}
+    k = task_params[language]["k"]
+    n = task_params[language]["n"]
 
     for fig_idx, word in enumerate(target_words):
         word_embeddings = []
         embeddings_label_encoded = []
         for emb_loader in emb_loaders:
-            embedding = np.asarray(emb_loader[word])
+            embedding = np.asarray(emb_loader.lazy_load_embeddings(word), dtype=np.float32)
             word_embeddings.append(embedding)
             embeddings_label_encoded.extend([label_encoding[emb_loader.corpus]] * len(embedding))
 
@@ -73,7 +82,7 @@ for lang_idx, language in enumerate(languages):
 
         model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
         task_1_answer, task_2_answer = model.fit_predict(preprocessed_data,
-                                                         embedding_epochs_labeled=embeddings_label_encoded)
+                                                         embedding_epochs_labeled=embeddings_label_encoded, k=k, n=n)
 
         answer_dict["task1"][language][word] = task_1_answer
         answer_dict["task2"][language][word] = task_2_answer
@@ -82,29 +91,35 @@ for lang_idx, language in enumerate(languages):
 # Evaluate the answer and save it ############
 ##############################################
 
-truth_data_loader = data_loader_factory.create_data_loader("truth_data_loader",
-                                                           base_path=paths['truth_trial_data_path'])
-truth_data = truth_data_loader.load()
-
-evaluation_suite = evaluation_suite_factory.create_evaluation_suite("semeval_2020_trial_evaluation")
-eval_results = evaluation_suite.evaluate(predictions=answer_dict, truth=truth_data)
+# truth_data_loader = data_loader_factory.create_data_loader("truth_data_loader",
+#                                                            base_path=paths['truth_trial_data_path'])
+# truth_data = truth_data_loader.load()
+#
+# evaluation_suite = evaluation_suite_factory.create_evaluation_suite("semeval_2020_trial_evaluation")
+# eval_results = evaluation_suite.evaluate(predictions=answer_dict, truth=truth_data)
 
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(answer_dict)
-pp.pprint(eval_results)
+# pp.pprint(eval_results)
 
 for task in answer_dict:
     for language in answer_dict[task]:
 
-        task_path = f"{paths['answer_path_']}{task}/"
+        task_path = f"{paths['answer_path_main']}{task}/"
         os.makedirs(task_path, exist_ok=True)
 
         with open(f"{task_path}{language}.txt", 'w', encoding='utf-8') as f_out:
             for word in answer_dict[task][language]:
                 answer = int(answer_dict[task][language][word]) if task == "task1" else \
                     float(answer_dict[task][language][word])
+                if language == "english":
+                    print(word)
+                    for t_word in english_target_words:
+                        if word == t_word[:-3]:
+                            word = t_word
+                            print(f"substituted {word} for {t_word}")
                 f_out.write('\t'.join((word, str(answer) + '\n')))
 
-shutil.make_archive(paths['out_zip_path'], 'zip', paths['in_zip_path'])
+shutil.make_archive(paths['out_zip_path_main'], 'zip', paths['in_zip_path_main'])
 
 print("done")

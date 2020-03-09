@@ -56,7 +56,7 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("latin",)
+languages = ("english",)
 corpora = ("corpus1", "corpus2")
 
 # 'german', "swedish", "latin", "english"
@@ -93,7 +93,7 @@ for lang_idx, language in enumerate(languages):
         for emb_loader in emb_loaders:
             embedding = np.asarray(emb_loader[word])
             embedding = embedding[:, 1:]
-            embedding = embedding[0:min(len(embedding), 100), :]
+            # embedding = embedding[0:min(len(embedding), 100), :]
             word_embeddings.append(embedding)
             embeddings_label_encoded.extend([label_encoding[emb_loader.corpus]] * len(embedding))
         print(word)
@@ -105,23 +105,23 @@ for lang_idx, language in enumerate(languages):
 
         model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
         labels = model.fit_predict_labeling(preprocessed_data)
-        noise = False
-        if -1 in labels:
-            noise = True
-            print(f"Noise points in the first sense for word {word}")
-
-        cluster_n = len(set(labels))
-        plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
-        sns.set(style='white', context='poster')
-        _, ax = plt.subplots(1, figsize=(14, 10))
-        markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
-        mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral', alpha=1.0)
-        plt.setp(ax, xticks=[], yticks=[])
-        if cluster_n > 1:
-            color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
-            color_bar.set_ticks(np.arange(cluster_n))
-            color_bar.set_ticklabels([f"Sense {sense_number}" for sense_number in range(cluster_n)])
-        plt.title(f"{preprocessing_method} embedded {model_name} clustered {word}")
+        # noise = False
+        # if -1 in labels:
+        #     noise = True
+        #     print(f"Noise points in the first sense for word {word}")
+        #
+        # cluster_n = len(set(labels))
+        # plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
+        # sns.set(style='white', context='poster')
+        # _, ax = plt.subplots(1, figsize=(14, 10))
+        # markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
+        # mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral', alpha=1.0)
+        # plt.setp(ax, xticks=[], yticks=[])
+        # if cluster_n > 1:
+        #     color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
+        #     color_bar.set_ticks(np.arange(cluster_n))
+        #     color_bar.set_ticklabels([f"Sense {sense_number}" for sense_number in range(cluster_n)])
+        # plt.title(f"{preprocessing_method} embedded {model_name} clustered {word}")
 
         plt.figure(fig_idx + len(languages) * lang_idx)
         _, ax = plt.subplots(1, figsize=(14, 10))

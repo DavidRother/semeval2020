@@ -10,6 +10,7 @@ paths = {"embedding_data_path": "../../data/embedding_data/",
          "truth_trial_data_path": "../../trial_data_public/truth/",
          "answer_path": "../../my_results/answer/answer/",
          "answer_path_old": "../../my_results/answer_old/answer/",
+         "answer_path_main": "../../my_results_main/answer/answer/",
          "out_zip_path": "../../my_results/answer",
          "in_zip_path": "../../my_results/answer/",
          "out_zip_path_main": "../../my_results_main/answer",
@@ -25,7 +26,7 @@ naive_gmm = {"n_components": 10, "covariance_type": "diag", "reg_covar": 1e-3}
 
 gmm = {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3}
 
-umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
+umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
 
 umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
 # "n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10
