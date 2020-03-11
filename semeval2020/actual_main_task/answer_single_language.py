@@ -34,7 +34,8 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("english", "latin", "german", "swedish")
+# "english", "latin", "german", "swedish"
+languages = ("swedish", )
 corpora = ("corpus1", "corpus2")
 
 ################################################
@@ -53,6 +54,7 @@ answer_dict = {"task1": {}, "task2": {}}
 label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
 
 # Compute the answers
+n_ones = 0
 
 for lang_idx, language in enumerate(languages):
     target_file = f"{base_path}targets/{language}.txt"
@@ -85,6 +87,7 @@ for lang_idx, language in enumerate(languages):
         task_1_answer, task_2_answer = model.fit_predict(x_data, embedding_epochs_labeled=embeddings_label_encoded,
                                                          k=k, n=n)
 
+        n_ones = n_ones + task_1_answer
         answer_dict["task1"][language][word] = task_1_answer
         answer_dict["task2"][language][word] = task_2_answer
 
@@ -101,24 +104,7 @@ for lang_idx, language in enumerate(languages):
 
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(answer_dict)
+print("Number sense lost or gained for words: " + str(n_ones))
 # pp.pprint(eval_results)
-
-for task in answer_dict:
-    for language in answer_dict[task]:
-
-        task_path = f"{paths['answer_path_main']}{task}/"
-        os.makedirs(task_path, exist_ok=True)
-
-        with open(f"{task_path}{language}.txt", 'w', encoding='utf-8') as f_out:
-            for word in answer_dict[task][language]:
-                answer = int(answer_dict[task][language][word]) if task == "task1" else \
-                    float(answer_dict[task][language][word])
-                if language == "english":
-                    for t_word in english_target_words:
-                        if word == t_word[:-3]:
-                            word = t_word
-                f_out.write('\t'.join((word, str(answer) + '\n')))
-
-shutil.make_archive(paths['out_zip_path_main'], 'zip', paths['in_zip_path_main'])
 
 print("done")

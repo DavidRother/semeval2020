@@ -20,6 +20,7 @@ from numba import NumbaPerformanceWarning
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 
+
 # Because having multiple scatters in one plot is too much work as an official API
 def mscatter(x,y, ax=None, m=None, **kw):
     import matplotlib.markers as mmarkers
@@ -58,7 +59,7 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("latin",)
+languages = ("german",)
 corpora = ("corpus1", "corpus2")
 
 # 'german', "swedish", "latin", "english"
@@ -82,50 +83,49 @@ for lang_idx, language in enumerate(languages):
     target_words = [os.path.splitext(filename)[0] for filename in csv_filenames]
 
     for fig_idx, word in enumerate(target_words):
-        if fig_idx > 10:
+        if fig_idx > 5:
             break
         file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
         auto_embedded_data1 = np.load(file1)
-        auto_embedded_data1 = auto_embedded_data1[0:min(len(auto_embedded_data1), 100), :]
         file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
         auto_embedded_data2 = np.load(file2)
-        auto_embedded_data2 = auto_embedded_data2[0:min(len(auto_embedded_data2), 100), :]
         embeddings_label_encoded = []
         embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
         embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
         print(word)
 
         x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
-        preprocessor = preprocessor_factory.create_preprocessor("UMAP",
-                                                                **config_factory.get_config("UMAP_AE"))
+        preprocessor = preprocessor_factory.create_preprocessor("UMAP", **config_factory.get_config("UMAP_AE_Language")
+                                                                [language])
         preprocessed_data = preprocessor.fit_transform(x_data)
 
-        model = model_factory.create_model(model_name, **config_factory.get_config(model_name))
+        model = model_factory.create_model(model_name, **config_factory.get_config(model_name)[language])
         labels = model.fit_predict_labeling(preprocessed_data)
         # noise = False
-        # if -1 in labels:
-        #     noise = True
-        #     print(f"Noise points in the first sense for word {word}")
-        #
-        # cluster_n = len(set(labels))
-        # plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
-        # sns.set(style='white', context='poster')
-        # _, ax = plt.subplots(1, figsize=(14, 10))
-        # markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
-        # mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral',
-        #          alpha=1.0)
-        # if cluster_n > 200:
-        #     print(f"wtf {word}")
-        # elif cluster_n > 1:
-        #     color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
-        #     color_bar.set_ticks(np.arange(cluster_n))
-        #     color_bar.set_ticklabels([f"Sense {sense_number}" for sense_number in range(cluster_n)])
-        # plt.title(f"{preprocessing_method} embedded {model_name} clustered {word}")
+        if -1 in labels:
+            # noise = True
+            labels = labels + 1
+            print(f"Noise points in the first sense for word {word}")
+
+        cluster_n = len(set(labels))
+        plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
+        sns.set(style='white', context='poster')
+        _, ax = plt.subplots(1, figsize=(14, 10))
+        markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
+        mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=labels, cmap='Spectral',
+                 alpha=1.0)
+        if cluster_n > 200:
+            print(f"wtf {word}")
+        elif cluster_n > 1:
+            color_bar = plt.colorbar(boundaries=np.arange(cluster_n + 1) - 0.5)
+            color_bar.set_ticks(np.arange(cluster_n))
+            color_bar.set_ticklabels([f"Sense {sense_number}" for sense_number in range(cluster_n)])
+        plt.title(f"{preprocessing_method} embedded {model_name} clustered {word}")
 
         plt.figure(fig_idx + len(languages) * lang_idx)
         sns.set(style='white', context='poster')
         _, ax = plt.subplots(1, figsize=(14, 10))
-        plt.scatter(preprocessed_data[:, 0], preprocessed_data[:, 1], c=embeddings_label_encoded,
+        plt.scatter(preprocessed_data[:, 0], preprocessed_data[:, 1], c=embeddings_label_encoded, s=0.5,
                     cmap='Spectral', alpha=1.0)
         color_bar = plt.colorbar(boundaries=np.arange(len(corpora) + 1) - 0.5)
         color_bar.set_ticks(np.arange(len(corpora)))

@@ -28,7 +28,11 @@ gmm = {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3}
 
 umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
 
-umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}
+umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
+umap_ae_language = {"latin": {"n_neighbors": 3, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "german": {"n_neighbors": 15, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "english": {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "swedish": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}}
 # "n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10
 
 dbscan = {"eps": 2.5, "min_samples": 5}
@@ -48,9 +52,14 @@ affinity_propagation = {"preference": -50, "damping": 0.5}
 
 agglomerative_clustering = {"n_clusters": None, "distance_threshold": 2.0}
 
-hdbscan = {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80}
+hdbscan = {"latin": {"min_ratio": 0.015, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+           "german": {"min_ratio": 0.06, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+           "english": {"min_ratio": 0.035, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+           "swedish": {"min_ratio": 0.020, "max_min_cluster_size_and_samples": 80, "noise_filter": False}}
 
-task_params = {"latin": {"k": 0, "n": 1}, "german": {"k": 2, "n": 5}, "english": {"k": 2, "n": 5},
+task_params = {"latin": {"k": 0, "n": 1},
+               "german": {"k": 2, "n": 5},
+               "english": {"k": 2, "n": 5},
                "swedish": {"k": 2, "n": 5}}
 
 
@@ -59,6 +68,7 @@ config_factory.register("NaiveGMM", naive_gmm)
 config_factory.register("GMM", gmm)
 config_factory.register("UMAP", umap)
 config_factory.register("UMAP_AE", umap_ae)
+config_factory.register("UMAP_AE_Language", umap_ae_language)
 config_factory.register("DBSCAN", dbscan)
 config_factory.register("BIRCH", birch)
 config_factory.register("AutoEncoder", auto_encoder)
