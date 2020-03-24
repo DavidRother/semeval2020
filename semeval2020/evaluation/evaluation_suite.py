@@ -20,14 +20,14 @@ class EvaluationSuite(abstract_evaluation_suite.AbstractEvaluationSuite):
             language_accuracies = {}
             for language in self.languages:
                 language_accuracies[f"ACC {language}"] = self._compute_language_accuracy(
-                    predictions["task1"][language], truth["task1"][language])
-            language_accuracies['ACC ALL'] = np.mean(np.asarray(list(language_accuracies.values())))
+                    predictions["task1"][language], truth["task1"][language]).item()
+            language_accuracies['ACC ALL'] = np.mean(np.asarray(list(language_accuracies.values()))).item()
 
         if "task2" in self.tasks:
             for language in self.languages:
                 language_ranking_scores[f"RANKING SCORE {language}"] = self._compute_language_ranking_score(
-                    predictions["task2"][language], truth["task2"][language])
-            language_ranking_scores['RANKING SCORE ALL'] = np.mean(np.asarray(list(language_ranking_scores.values())))
+                    predictions["task2"][language], truth["task2"][language]).item()
+            language_ranking_scores['RANKING SCORE ALL'] = np.mean(np.asarray(list(language_ranking_scores.values()))).item()
         return language_accuracies, language_ranking_scores
 
     @staticmethod
