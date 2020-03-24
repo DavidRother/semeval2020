@@ -65,6 +65,7 @@ for lang_idx, language in enumerate(languages):
     answer_dict["task2"][language] = {}
     k = task_params[language]["k"]
     n = task_params[language]["n"]
+    n_ones = 0
 
     for fig_idx, word in tqdm.tqdm(enumerate(target_words)):
         file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
@@ -85,8 +86,11 @@ for lang_idx, language in enumerate(languages):
         task_1_answer, task_2_answer = model.fit_predict(x_data, embedding_epochs_labeled=embeddings_label_encoded,
                                                          k=k, n=n)
 
+        n_ones = n_ones + task_1_answer
         answer_dict["task1"][language][word] = task_1_answer
         answer_dict["task2"][language][word] = task_2_answer
+
+    print(n_ones)
 
 ##############################################
 # Evaluate the answer and save it ############

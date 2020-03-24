@@ -38,6 +38,16 @@ class MyDBSCANBIRCH(abstract_model.AbstractModel):
         self.birch = Birch(n_clusters=num_labels, threshold=self.threshold, branching_factor=self.branching_factor)
         return self.birch.fit_predict(data)
 
+    def predict_with_extra_return(self, data, embedding_epochs_labeled=None, k=2, n=5):
+        labels = self.dbscan.fit_predict(data)
+        num_labels = len(set(labels)) if -1 not in labels else len(set(labels)) - 1
+        num_labels = min(self.max_clusters, num_labels)
+        self.birch = Birch(n_clusters=num_labels, threshold=self.threshold, branching_factor=self.branching_factor)
+        labels = self.birch.fit_predict(data)
+        epoch_labels = set(embedding_epochs_labeled)
+        task_answers = model_utilities.compute_task_answers(labels, embedding_epochs_labeled, epoch_labels, k, n)
+        return task_answers[0], task_answers[1], labels
+
     def predict_labeling(self, data, **kwargs):
         raise NotImplementedError()
 
@@ -57,3 +67,4 @@ class MyDBSCANBIRCH(abstract_model.AbstractModel):
 
 
 model_factory.register("DBSCAN_BIRCH", MyDBSCANBIRCH)
+model_factory.register("DBSCAN_BIRCHLanguage", MyDBSCANBIRCH)

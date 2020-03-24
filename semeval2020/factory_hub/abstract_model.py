@@ -20,5 +20,9 @@ class AbstractModel(ABC):
         raise NotImplementedError()
 
     @abstractmethod
+    def predict_with_extra_return(self, data, **kwargs):
+        raise NotImplementedError()
+
+    @abstractmethod
     def predict_labeling(self, data, **kwargs):
         raise NotImplementedError()

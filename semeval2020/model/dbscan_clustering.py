@@ -24,6 +24,12 @@ class MyDBSCAN(abstract_model.AbstractModel):
             embedding_epochs_labeled = list(compress(embedding_epochs_labeled, indexer))
         return model_utilities.compute_task_answers(labels, embedding_epochs_labeled, epoch_labels, k, n)
 
+    def predict_with_extra_return(self, data, embedding_epochs_labeled=None, k=2, n=5):
+        labels = self.dbscan.fit_predict(data)
+        epoch_labels = set(embedding_epochs_labeled)
+        task_answers = model_utilities.compute_task_answers(labels, embedding_epochs_labeled, epoch_labels, k, n)
+        return task_answers[0], task_answers[1], labels
+
     def fit_predict_labeling(self, data, **kwargs):
         return self.dbscan.fit_predict(data, **kwargs)
 
@@ -32,3 +38,4 @@ class MyDBSCAN(abstract_model.AbstractModel):
 
 
 model_factory.register("DBSCAN", MyDBSCAN)
+model_factory.register("DBSCANLanguage", MyDBSCAN)

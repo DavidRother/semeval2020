@@ -2,11 +2,11 @@ imperator	1
 fidelis	0
 sanctus	0
 civitas	0
-scriptura	0
+scriptura	1
 dux	0
 pontifex	1
 virtus	0
-cohors	0
+cohors	1
 itero	1
 consul	0
 humanitas	1
@@ -21,10 +21,10 @@ acerbus	1
 nobilitas	1
 templum	0
 ancilla	1
-sapientia	0
+sapientia	1
 senatus	0
 hostis	0
-titulus	0
+titulus	1
 sensus	0
 adsumo	1
 oportet	0

@@ -35,7 +35,7 @@ config_paths = "ProjectPaths"
 
 tasks = ("task1", "task2")
 # "english", "latin", "german", "swedish"
-languages = ("swedish", )
+languages = ("latin", )
 corpora = ("corpus1", "corpus2")
 
 ################################################

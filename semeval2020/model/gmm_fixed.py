@@ -32,6 +32,14 @@ class GMM(abstract_model.AbstractModel):
         self.fit(data)
         return self.gmm.predict(data)
 
+    def predict_with_extra_return(self, data, embedding_epochs_labeled=None, k=2, n=5):
+        labels = self.gmm.predict(data)
+        epoch_labels = set(embedding_epochs_labeled)
+        sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
+        task_1_answer = int(any([True for sd in sense_frequencies if 0 in sense_frequencies[sd]]))
+        task_2_answer = distance.jensenshannon(sense_frequencies[0], sense_frequencies[1], 2.0)
+        return task_1_answer, task_2_answer, labels
+
     def predict_labeling(self, data, **kwargs):
         return self.gmm.predict(data)
 
@@ -51,4 +59,5 @@ class GMM(abstract_model.AbstractModel):
 
 
 model_factory.register("GMM", GMM)
+model_factory.register("GMMLanguage", GMM)
 
