@@ -32,9 +32,9 @@ umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2
 
 umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
 
-umap_ae_language = {"latin": {"n_neighbors": 3, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
-                    "german": {"n_neighbors": 6, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
-                    "english": {"n_neighbors": 6, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+umap_ae_language = {"latin": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "german": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "english": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
                     "swedish": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}}
 # "n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10
 
@@ -65,15 +65,15 @@ affinity_propagation = {"preference": -50, "damping": 0.5}
 
 agglomerative_clustering = {"n_clusters": None, "distance_threshold": 2.0}
 
-hdbscan = {"latin": {"min_ratio": 0.010, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
-           "german": {"min_ratio": 0.06, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
-           "english": {"min_ratio": 0.030, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
+hdbscan = {"latin": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
+           "german": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
+           "english": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
            "swedish": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True}}
 
-hdbscan_language = {"latin": {"min_ratio": 0.010, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
-                    "german": {"min_ratio": 0.06, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
-                    "english": {"min_ratio": 0.030, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
-                    "swedish": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True}}
+hdbscan_language = {"latin": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+                    "german": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+                    "english": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+                    "swedish": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False}}
 
 dbscan_language = {"latin": {"eps": 2.5, "min_samples": 5},
                    "german": {"eps": 2.5, "min_samples": 5},
@@ -90,7 +90,7 @@ gmm_language = {"latin": {"n_components": 5, "covariance_type": "diag", "reg_cov
                 "english": {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3},
                 "swedish": {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3}}
 
-task_params = {"latin": {"k": 0, "n": 1},
+task_params = {"latin": {"k": 2, "n": 5},
                "german": {"k": 2, "n": 5},
                "english": {"k": 2, "n": 5},
                "swedish": {"k": 2, "n": 5}}

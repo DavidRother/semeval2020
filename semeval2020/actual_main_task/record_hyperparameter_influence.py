@@ -42,25 +42,25 @@ tasks = ("task1", "task2")
 languages = ("english", "latin", "german", "swedish")
 corpora = ("corpus1", "corpus2")
 
-num_trials_per_config = 20
+num_trials_per_config = 4
 
 ################################################
 # Hyperparameter Configs #######################
 ################################################
 
-model_changes = {"HDBSCANLanguage": {"min_ratio": [0.001, 0.005, 0.01, 0.015, 0.02, 0.03, 0.04]},
+model_changes = {"HDBSCANLanguage": {"min_ratio": [0.01, 0.02, 0.03, 0.04]},
                  "GMMLanguage": {"n_components": [2, 3, 4, 5, 6, 7, 10]},
                  "DBSCANLanguage": {"eps": [0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5],
-                                    "min_samples": [3, 5, 8, 10, 15, 20, 30, 50]},
-                 "DBSCAN_BIRCHLanguage": {"eps": [0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5],
-                                          "min_samples": [3, 5, 8, 10, 15, 20, 30, 50],
-                                          "threshold": [0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5]}}
+                                    "min_samples": [3, 5, 8, 10, 15, 20, 50]},
+                 "DBSCAN_BIRCHLanguage": {"eps": [0.5, 1, 1.5, 2.0, 2.5, 3.0],
+                                          "min_samples": [3, 5, 8, 10, 15, 30, 50],
+                                          "threshold": [0.5, 1, 1.5, 2.0]}}
 
-preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [2, 3, 4, 5, 6, 7, 8, 9, 10],
-                                             "n_components": [2, 4, 6, 8, 10, 15, 20]},
-                        "TSNE_AE_Language": {"n_components": [2, 4, 6, 8, 10, 15, 20],
-                                             "perplexity": [5, 10, 20, 50, 100]},
-                        "PCA_AE_Language": {"n_components": [2, 4, 6, 8, 10, 15, 20]}}
+preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [2, 4, 5, 6, 8, 9, 10],
+                                             "n_components": [2, 5, 10, 15]},
+                        "TSNE_AE_Language": {"n_components": [2, 5, 10, 15],
+                                             "perplexity": [10, 20, 50]},
+                        "PCA_AE_Language": {"n_components": [3, 5, 8, 10, 15]}}
 
 ################################################
 #  Code ########################################
@@ -85,8 +85,18 @@ for model_name in model_names:
                         for seed in tqdm.tqdm(constants.RANDOM_SEEDS[:num_trials_per_config]):
                             with evalpy.start_run(experiment_name + ' ' + model_name):
                                 np.random.seed(seed)
+                                evalpy.log_run_entries({"model": model_name, "preprocessing": preprocessing_method})
                                 answer_dict = {"task1": {}, "task2": {}}
                                 label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
+
+                                language_preprocessing_config = config_factory.get_config(preprocessing_method)["german"]
+                                language_preprocessing_config[p_param] = p_value
+
+                                model_config = config_factory.get_config(model_name)["german"]
+                                model_config[m_param] = value
+
+                                evalpy.log_run_entries(language_preprocessing_config)
+                                evalpy.log_run_entries(model_config)
 
                                 all_labels = []
 
@@ -107,46 +117,48 @@ for model_name in model_names:
                                     language_labels = []
 
                                     for fig_idx, word in enumerate(target_words):
-                                        file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
-                                        auto_embedded_data1 = np.load(file1)
-                                        file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
-                                        auto_embedded_data2 = np.load(file2)
-                                        embeddings_label_encoded = []
-                                        embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
-                                        embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
+                                        try:
+                                            file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
+                                            auto_embedded_data1 = np.load(file1)
+                                            file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
+                                            auto_embedded_data2 = np.load(file2)
+                                            embeddings_label_encoded = []
+                                            embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
+                                            embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
 
-                                        x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
+                                            x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
 
-                                        language_preprocessing_config = config_factory.get_config(preprocessing_method)[language]
-                                        language_preprocessing_config[p_param] = p_value
+                                            preprocessor = preprocessor_factory.create_preprocessor(preprocessing_method,
+                                                                                                    **language_preprocessing_config)
+                                            x_data = preprocessor.fit_transform(x_data)
 
-                                        preprocessor = preprocessor_factory.create_preprocessor(preprocessing_method,
-                                                                                                **language_preprocessing_config)
-                                        x_data = preprocessor.fit_transform(x_data)
+                                            model = model_factory.create_model(model_name, **model_config)
+                                            task_1_answer, task_2_answer, labels = model.predict_with_extra_return(x_data,
+                                                                                                                   embedding_epochs_labeled=embeddings_label_encoded,
+                                                                                                                   k=k, n=n)
 
-                                        model_config = config_factory.get_config(model_name)[language]
-                                        model_config[m_param] = value
-
-                                        model = model_factory.create_model(model_name, **model_config)
-                                        task_1_answer, task_2_answer, labels = model.predict_with_extra_return(x_data,
-                                                                                                               embedding_epochs_labeled=embeddings_label_encoded,
-                                                                                                               k=k, n=n)
-
-                                        answer_dict["task1"][language][word] = task_1_answer
-                                        answer_dict["task2"][language][word] = task_2_answer
-                                        word_noise = len([l for l in labels if l == -1])/len(labels)
-                                        language_labels.extend(labels)
-                                        # log everything for the step
-                                        evalpy.log_run_step({"word": word, "Word noise ratio": word_noise,
-                                                             "language": language}, step_forward=True)
-                                    # except:
-                                    #         evalpy.log_run_step(
-                                    #             {"word": word, "Word noise ratio": -1, "language": language},
-                                    #             step_forward=True)
-                                    language_noise = len([l for l in language_labels if l == -1])/len(language_labels)
+                                            answer_dict["task1"][language][word] = task_1_answer
+                                            answer_dict["task2"][language][word] = task_2_answer
+                                            word_noise = len([l for l in labels if l == -1])/len(labels)
+                                            language_labels.extend(labels)
+                                            # log everything for the step
+                                            evalpy.log_run_step({"word": word, "Word noise ratio": word_noise,
+                                                                "language": language}, step_forward=True)
+                                        except:
+                                            evalpy.log_run_step(
+                                                {"word": word, "Word noise ratio": -1, "language": language},
+                                                step_forward=True)
+                                    if len(language_labels) == 0:
+                                        language_noise = -1
+                                    else:
+                                        language_noise = len([l for l in language_labels if l == -1])/len(language_labels)
                                     evalpy.log_run_entries({f"{language} noise ratio": language_noise})
                                     all_labels.extend(language_labels)
 
+                                if len(all_labels) == 0:
+                                    evalpy.log_run_entries({"Noise ratio ALL": -1, "random seed": seed,
+                                                            "Embeddings": "BERT"})
+                                    continue
                                 truth_data_loader = data_loader_factory.create_data_loader("truth_data_loader",
                                                                                            base_path=paths["truth_test_data_path"])
                                 truth_data = truth_data_loader.load()
@@ -155,7 +167,10 @@ for model_name in model_names:
                                 t1_results, t2_results = evaluation_suite.evaluate(predictions=answer_dict, truth=truth_data)
 
                                 # log everything in evalpy for the whole run
-                                noise = len([l for l in all_labels if l == -1]) / len(all_labels)
+                                if len(all_labels) == 0:
+                                    noise = -1
+                                else:
+                                    noise = len([l for l in all_labels if l == -1]) / len(all_labels)
                                 evalpy.log_run_entries(t1_results)
                                 evalpy.log_run_entries(t2_results)
                                 evalpy.log_run_entries({"Noise ratio ALL": noise, "random seed": seed,
