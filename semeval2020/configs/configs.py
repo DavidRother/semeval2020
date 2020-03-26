@@ -3,6 +3,7 @@ from semeval2020.factory_hub import config_factory
 
 paths = {"embedding_data_path": "../../data/embedding_data/",
          "embedding_data_path_main": "../../data/embedding_data_semeval2020/",
+         "xlmr_embedding_data_path_main": "../../data/embedding_data_semeval2020/",
          "embedding_data_path_old": "../../data/embedding_data_old/",
          "embedding_data_path_old2": "../../data/embedding_data_old2/",
          "auto_embedding_data_path_old2": "../../data/auto_embedded_data_old2/",

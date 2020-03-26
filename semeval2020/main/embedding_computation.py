@@ -1,4 +1,4 @@
-from semeval2020.model.bertwrapper import BertWrapper
+from semeval2020.language_models.bertwrapper import BertWrapper
 from semeval2020.data_loader.sentence_loader import SentenceLoader
 from semeval2020.model import preprocessing
 

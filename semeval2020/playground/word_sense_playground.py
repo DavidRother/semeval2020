@@ -1,28 +1,21 @@
-from semeval2020.model.bertwrapper import BertWrapper
+from semeval2020.language_models.bertwrapper import BertWrapper
 from semeval2020.data_loader.senseval_sentence_loader import SensEvalLoader
 from semeval2020.model import preprocessing
 
 import torch
-import os.path
-import pandas as pd
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import itertools
 import tqdm
-from semeval2020.factory_hub import data_loader_factory, evaluation_suite_factory, model_factory
+from semeval2020.factory_hub import model_factory
 from semeval2020.factory_hub import preprocessor_factory, config_factory
 
 import os.path
-import shutil
-import itertools
 import warnings
-import pprint
 import numpy as np
 from numba import NumbaPerformanceWarning
 from itertools import compress
-from collections import defaultdict
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, confusion_matrix, normalized_mutual_info_score
+from sklearn.metrics import accuracy_score, confusion_matrix, normalized_mutual_info_score
 
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
