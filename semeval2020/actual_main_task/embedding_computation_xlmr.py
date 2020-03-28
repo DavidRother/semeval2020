@@ -13,8 +13,8 @@ import numpy as np
 #  Config Parameter ####################
 ########################################
 
-language = 'latin'
-corpus = "corpus1"
+language = 'swedish'
+corpus = "corpus2"
 
 base_path = "../../data/main_task_data/"
 model_string = 'xlmr.large'  # "dbmdz/bert-base-german-cased"
@@ -43,9 +43,14 @@ sentences = preprocessing.sanitized_sentences(sentences, max_len=max_length_sent
 sentences = (sentence[1:] for sentence in sentences)
 sentences = preprocessing.filter_for_words(sentences, target_words)
 sentences = preprocessing.remove_pos_tagging(sentences, target_words)
-# print(len(list(sentences)))
 target_words = [preprocessing.remove_pos_tagging_word(word) for word in target_words]
 tokenized_target_sentences = xlmr_model.tokenize_sentences(sentences, target_words)
+tok_sen = list(tokenized_target_sentences)
+for tokenized_sentence, target_word_idx_dict in tok_sen:
+    if len(tokenized_sentence) > 500:
+        print("hi")
+
+
 target_embeddings_dict = {target: [] for target in target_words}
 target_sentences_dict = {target: [] for target in target_words}
 
