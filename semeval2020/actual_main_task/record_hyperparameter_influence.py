@@ -25,8 +25,8 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 ################################################
 
 data_load = "embedding_loader"
-model_names = ["HDBSCANLanguage", "DBSCANLanguage", "DBSCAN_BIRCHLanguage", "GMMLanguage"]
-preprocessing_methods = ["UMAP_AE_Language", "TSNE_AE_Language", "PCA_AE_Language"]
+model_names = ["GMMLanguage"]
+preprocessing_methods = ["UMAP_AE_Language"]
 
 ################################################
 # Configs ######################################
@@ -48,19 +48,10 @@ num_trials_per_config = 4
 # Hyperparameter Configs #######################
 ################################################
 
-model_changes = {"HDBSCANLanguage": {"min_ratio": [0.01, 0.02, 0.03, 0.04]},
-                 "GMMLanguage": {"n_components": [2, 3, 4, 5, 6, 7, 10]},
-                 "DBSCANLanguage": {"eps": [0.5, 1, 1.5, 2.0, 2.5, 3.0, 3.5],
-                                    "min_samples": [3, 5, 8, 10, 15, 20, 50]},
-                 "DBSCAN_BIRCHLanguage": {"eps": [0.5, 1, 1.5, 2.0, 2.5, 3.0],
-                                          "min_samples": [3, 5, 8, 10, 15, 30, 50],
-                                          "threshold": [0.5, 1, 1.5, 2.0]}}
+model_changes = {"GMMLanguage": {"n_components": [5]}}
 
-preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [2, 4, 5, 6, 8, 9, 10],
-                                             "n_components": [2, 5, 10, 15]},
-                        "TSNE_AE_Language": {"n_components": [2, 5, 10, 15],
-                                             "perplexity": [10, 20, 50]},
-                        "PCA_AE_Language": {"n_components": [3, 5, 8, 10, 15]}}
+preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [4, 5, 6, 10],
+                                             "n_components": [2, 5, 10]}}
 
 ################################################
 #  Code ########################################
@@ -94,9 +85,10 @@ for model_name in model_names:
 
                                 model_config = config_factory.get_config(model_name)["german"]
                                 model_config[m_param] = value
+                                model_config_log = {k + '_' + model_name: v for k, v in model_config.items()}
 
                                 evalpy.log_run_entries(language_preprocessing_config)
-                                evalpy.log_run_entries(model_config)
+                                evalpy.log_run_entries(model_config_log)
 
                                 all_labels = []
 
@@ -117,37 +109,37 @@ for model_name in model_names:
                                     language_labels = []
 
                                     for fig_idx, word in enumerate(target_words):
-                                        try:
-                                            file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
-                                            auto_embedded_data1 = np.load(file1)
-                                            file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
-                                            auto_embedded_data2 = np.load(file2)
-                                            embeddings_label_encoded = []
-                                            embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
-                                            embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
+                                        # try:
+                                        file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
+                                        auto_embedded_data1 = np.load(file1)
+                                        file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
+                                        auto_embedded_data2 = np.load(file2)
+                                        embeddings_label_encoded = []
+                                        embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
+                                        embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
 
-                                            x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
+                                        x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
 
-                                            preprocessor = preprocessor_factory.create_preprocessor(preprocessing_method,
-                                                                                                    **language_preprocessing_config)
-                                            x_data = preprocessor.fit_transform(x_data)
+                                        preprocessor = preprocessor_factory.create_preprocessor(preprocessing_method,
+                                                                                                **language_preprocessing_config)
+                                        x_data = preprocessor.fit_transform(x_data)
 
-                                            model = model_factory.create_model(model_name, **model_config)
-                                            task_1_answer, task_2_answer, labels = model.predict_with_extra_return(x_data,
-                                                                                                                   embedding_epochs_labeled=embeddings_label_encoded,
-                                                                                                                   k=k, n=n)
+                                        model = model_factory.create_model(model_name, **model_config)
+                                        task_1_answer, task_2_answer, labels = model.predict_with_extra_return(x_data,
+                                                                                                               embedding_epochs_labeled=embeddings_label_encoded,
+                                                                                                               k=k, n=n)
 
-                                            answer_dict["task1"][language][word] = task_1_answer
-                                            answer_dict["task2"][language][word] = task_2_answer
-                                            word_noise = len([l for l in labels if l == -1])/len(labels)
-                                            language_labels.extend(labels)
-                                            # log everything for the step
-                                            evalpy.log_run_step({"word": word, "Word noise ratio": word_noise,
-                                                                "language": language}, step_forward=True)
-                                        except:
-                                            evalpy.log_run_step(
-                                                {"word": word, "Word noise ratio": -1, "language": language},
-                                                step_forward=True)
+                                        answer_dict["task1"][language][word] = task_1_answer
+                                        answer_dict["task2"][language][word] = task_2_answer
+                                        word_noise = len([l for l in labels if l == -1])/len(labels)
+                                        language_labels.extend(labels)
+                                        # log everything for the step
+                                        evalpy.log_run_step({"word": word, "Word noise ratio": word_noise,
+                                                            "language": language}, step_forward=True)
+                                    # except:
+                                        #     evalpy.log_run_step(
+                                        #         {"word": word, "Word noise ratio": -1, "language": language},
+                                        #         step_forward=True)
                                     if len(language_labels) == 0:
                                         language_noise = -1
                                     else:

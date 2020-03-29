@@ -45,10 +45,6 @@ sentences = preprocessing.filter_for_words(sentences, target_words)
 sentences = preprocessing.remove_pos_tagging(sentences, target_words)
 target_words = [preprocessing.remove_pos_tagging_word(word) for word in target_words]
 tokenized_target_sentences = xlmr_model.tokenize_sentences(sentences, target_words)
-tok_sen = list(tokenized_target_sentences)
-for tokenized_sentence, target_word_idx_dict in tok_sen:
-    if len(tokenized_sentence) > 500:
-        print("hi")
 
 
 target_embeddings_dict = {target: [] for target in target_words}
@@ -57,7 +53,10 @@ target_sentences_dict = {target: [] for target in target_words}
 xlmr_model.enter_eval_mode()
 
 for tokenized_sentence, target_word_idx_dict in tqdm.tqdm(tokenized_target_sentences):
+    if len(tokenized_sentence) > 511:
+        continue
     target_embeddings = xlmr_model.compute_embeddings(tokenized_sentence, target_word_idx_dict)
+
     for target, embeddings in target_embeddings.items():
         target_embeddings_dict[target].extend(embeddings)
         sent = xlmr_model.xlmr.decode(tokenized_sentence)

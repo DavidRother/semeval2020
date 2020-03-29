@@ -33,7 +33,9 @@ class GMM(abstract_model.AbstractModel):
         return self.gmm.predict(data)
 
     def predict_with_extra_return(self, data, embedding_epochs_labeled=None, k=2, n=5):
-        labels = self.gmm.predict(data)
+        self.gmm = GaussianMixture(n_components=self.n_components, covariance_type=self.covariance_type,
+                                   reg_covar=self.reg_covar)
+        labels = self.gmm.fit_predict(data)
         epoch_labels = set(embedding_epochs_labeled)
         sense_frequencies = self.compute_cluster_sense_frequency(labels, embedding_epochs_labeled, epoch_labels)
         task_1_answer = int(any([True for sd in sense_frequencies if 0 in sense_frequencies[sd]]))
