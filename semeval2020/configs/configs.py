@@ -34,10 +34,10 @@ umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2
 
 umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
 
-umap_ae_language = {"latin": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2},
-                    "german": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2},
-                    "english": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2},
-                    "swedish": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}}
+umap_ae_language = {"latin": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "german": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "english": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
+                    "swedish": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}}
 # "n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10
 
 dbscan = {"eps": 2.5, "min_samples": 5}

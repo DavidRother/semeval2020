@@ -48,9 +48,9 @@ num_trials_per_config = 10
 # Hyperparameter Configs #######################
 ################################################
 
-model_changes = {"HDBSCANLanguage": {"min_ratio": [0.03]}}
+model_changes = {"HDBSCANLanguage": {"min_ratio": [0.04, 0.05, 0.08, 0.1, 0.15, 0.2]}}
 
-preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [5]}}
+preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [5, 7, 10]}}
 
 ################################################
 #  Code ########################################
