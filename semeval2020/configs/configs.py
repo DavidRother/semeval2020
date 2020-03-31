@@ -3,11 +3,12 @@ from semeval2020.factory_hub import config_factory
 
 paths = {"embedding_data_path": "../../data/embedding_data/",
          "embedding_data_path_main": "../../data/embedding_data_semeval2020/",
-         "xlmr_embedding_data_path_main": "../../data/embedding_data_semeval2020/",
+         "xlmr_embedding_data_path_main": "../../data/xlmr_embedding_data_semeval2020/",
          "embedding_data_path_old": "../../data/embedding_data_old/",
          "embedding_data_path_old2": "../../data/embedding_data_old2/",
          "auto_embedding_data_path_old2": "../../data/auto_embedded_data_old2/",
          "auto_embedding_data_path_main": "../../data/auto_embedded_data_semeval2020/",
+         "auto_embedding_xlmr_data_path_main": "../../data/auto_embedded_data_xlmr_semeval2020/",
          "truth_trial_data_path": "../../trial_data_public/truth/",
          "truth_test_data_path": "../../data/test_data_truth/",
          "evalpy_path": "../../data/evalpy/",
@@ -33,10 +34,10 @@ umap = {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2
 
 umap_ae = {"n_neighbors": 7, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}
 
-umap_ae_language = {"latin": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
-                    "german": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
-                    "english": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10},
-                    "swedish": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10}}
+umap_ae_language = {"latin": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2},
+                    "german": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2},
+                    "english": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2},
+                    "swedish": {"n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 2}}
 # "n_neighbors": 5, "min_dist": 0.0, "metric": 'cosine', "n_components": 10
 
 dbscan = {"eps": 2.5, "min_samples": 5}
@@ -46,7 +47,7 @@ birch = {"n_clusters": None, "threshold": 1.1, "branching_factor": 300}
 dbscan_birch = {"eps": 2.5, "min_samples": 5, "threshold": 1.5, "branching_factor": 30, "max_clusters": 20}
 # {"eps": 0.8, "min_samples": 3, "threshold": 1.5, "branching_factor": 30}
 
-auto_encoder = {"learning_rate": 1e-3, "weight_decay": 1e-5, "num_epochs": 200, "batch_size": 128, "input_size": 768}
+auto_encoder = {"learning_rate": 1e-3, "weight_decay": 1e-5, "num_epochs": 200, "batch_size": 128, "input_size": 1024}
 
 t_sne = {"n_components": 2, "perplexity": 50, "metric": "cosine"}
 
@@ -68,7 +69,7 @@ agglomerative_clustering = {"n_clusters": None, "distance_threshold": 2.0}
 
 hdbscan = {"latin": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
            "german": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
-           "english": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
+           "english": {"min_ratio": 0.040, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
            "swedish": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True}}
 
 hdbscan_language = {"latin": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},

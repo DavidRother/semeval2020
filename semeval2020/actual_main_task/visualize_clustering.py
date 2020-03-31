@@ -75,74 +75,79 @@ label_encoding = {corpus: idx for idx, corpus in enumerate(corpora)}
 marker_encoding = {0: '*', 1: "^"}
 colors = ['black', 'red', 'orange', 'blue', 'gray', 'salmon', 'wheat', 'navy']
 target_colors = {target: colors[idx] for idx, target in enumerate(corpora)}
-np.random.seed(42)
+for seed in range(100000):
+    np.random.seed(100)
 
-for lang_idx, language in enumerate(languages):
-    target_dir = f"{paths['embedding_data_path_main']}{language}/corpus1/"
-    filenames = listdir(target_dir)
-    csv_filenames = [filename for filename in filenames if filename.endswith(".csv")]
-    target_words = [os.path.splitext(filename)[0] for filename in csv_filenames]
+    for lang_idx, language in enumerate(languages):
+        target_dir = f"{paths['embedding_data_path_main']}{language}/corpus1/"
+        filenames = listdir(target_dir)
+        csv_filenames = [filename for filename in filenames if filename.endswith(".csv")]
+        target_words = [os.path.splitext(filename)[0] for filename in csv_filenames]
 
-    for fig_idx, word in enumerate(target_words):
-        if word != "chairman":
-            continue
-        file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
-        auto_embedded_data1 = np.load(file1)
-        file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
-        auto_embedded_data2 = np.load(file2)
-        embeddings_label_encoded = []
-        embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
-        embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
-        print(word)
+        for fig_idx, word in enumerate(target_words):
+            if word != "chairman":
+                continue
+            file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
+            auto_embedded_data1 = np.load(file1)
+            file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
+            auto_embedded_data2 = np.load(file2)
+            embeddings_label_encoded = []
+            embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
+            embeddings_label_encoded.extend([1] * len(auto_embedded_data2))
+            print(word)
 
-        x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
-        preprocessor = preprocessor_factory.create_preprocessor("UMAP", **config_factory.get_config("UMAP_AE_Language")
-                                                                [language])
-        preprocessed_data = preprocessor.fit_transform(x_data)
+            x_data = np.vstack([auto_embedded_data1, auto_embedded_data2])
+            preprocessor = preprocessor_factory.create_preprocessor("UMAP", **config_factory.get_config("UMAP_AE_Language")
+                                                                    [language])
+            preprocessed_data = preprocessor.fit_transform(x_data)
 
-        model = model_factory.create_model(model_name, **config_factory.get_config(model_name)[language])
-        labels = model.fit_predict_labeling(preprocessed_data)
-        # noise = False
-        if -1 in labels:
-            # noise = True
-            labels = labels + 1
-            print(f"Noise points in the first sense for word {word}")
+            model = model_factory.create_model(model_name, **config_factory.get_config(model_name)[language])
+            labels = model.fit_predict_labeling(preprocessed_data)
+            # noise = False
+            if -1 in labels:
+                # noise = True
+                labels = labels + 1
+                print(f"Noise points in the first sense for word {word}")
 
-        cluster_n = len(set(labels))
-        plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
-        sns.set(style='white', context='poster')
-        _, ax = plt.subplots(1, figsize=(14, 10))
-        markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
+            cluster_n = len(set(labels))
 
-        if cluster_n == 2:
-            print("yes")
-        marks = ['*' if lab % 2 else '^' for lab in labels]
-        mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=marks, c=labels, cmap='Spectral',
-                 alpha=1.0)
-        sen1_handle = mlines.Line2D([0], [0], color='w', marker='*', markersize=20, label='Sense 1',
-                                    markerfacecolor='#a61e3b')
-        sen2_handle = mlines.Line2D([0], [0], color='w', marker='^', markersize=20, label='Sense 2',
-                                    markerfacecolor='slateblue')
+            if cluster_n == 2:
+                print("yes")
+                print(seed)
+            else:
+                continue
 
-        ax.legend(handles=[sen1_handle, sen2_handle])
-        plt.setp(ax, xticks=[], yticks=[])
-        if cluster_n > 200:
-            print(f"wtf {word}")
-        plt.title(f'{model_name} clustered word "{word}"')
+            plt.figure(fig_idx + len(languages) * lang_idx + len(languages) * len(target_words))
+            sns.set(style='white', context='poster')
+            _, ax = plt.subplots(1, figsize=(14, 10))
+            markers = [marker_encoding[lab] for lab in embeddings_label_encoded]
+            marks = ['*' if lab % 2 else '^' for lab in labels]
+            mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=marks, c=labels, cmap='Spectral',
+                     alpha=1.0)
+            sen1_handle = mlines.Line2D([0], [0], color='w', marker='*', markersize=20, label='Sense 1',
+                                        markerfacecolor='#a61e3b')
+            sen2_handle = mlines.Line2D([0], [0], color='w', marker='^', markersize=20, label='Sense 2',
+                                        markerfacecolor='slateblue')
 
-        plt.figure(fig_idx + len(languages) * lang_idx)
-        sns.set(style='white', context='poster')
-        _, ax = plt.subplots(1, figsize=(14, 10))
-        mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=embeddings_label_encoded, s=80,
-                 cmap='Spectral', alpha=1.0)
-        corp1_handle = mlines.Line2D([0], [0], color='w', marker='*', markersize=20, label='Corpus 1',
-                                     markerfacecolor='#a61e3b')
-        corp2_handle = mlines.Line2D([0], [0], color='w', marker='^', markersize=20, label='Corpus 2',
-                                     markerfacecolor='slateblue')
+            ax.legend(handles=[sen1_handle, sen2_handle], prop={"size": 30})
+            plt.setp(ax, xticks=[], yticks=[])
+            if cluster_n > 200:
+                print(f"wtf {word}")
+            plt.title(f'{model_name} clustered word "{word}"', fontsize=35)
 
-        ax.legend(handles=[corp1_handle, corp2_handle])
-        plt.setp(ax, xticks=[], yticks=[])
-        plt.title(f'{preprocessing_method} embedded word "{word}"')
+            plt.figure(fig_idx + len(languages) * lang_idx)
+            sns.set(style='white', context='poster')
+            _, ax = plt.subplots(1, figsize=(14, 10))
+            mscatter(preprocessed_data[:, 0], preprocessed_data[:, 1], ax=ax, m=markers, c=embeddings_label_encoded, s=80,
+                     cmap='Spectral', alpha=1.0)
+            corp1_handle = mlines.Line2D([0], [0], color='w', marker='*', markersize=20, label='Corpus 1',
+                                         markerfacecolor='#a61e3b')
+            corp2_handle = mlines.Line2D([0], [0], color='w', marker='^', markersize=20, label='Corpus 2',
+                                         markerfacecolor='slateblue')
+
+            ax.legend(handles=[corp1_handle, corp2_handle], prop={"size": 30})
+            plt.setp(ax, xticks=[], yticks=[])
+            plt.title(f'{preprocessing_method} embedded word "{word}"', fontsize=35)
 
 plt.show()
 
