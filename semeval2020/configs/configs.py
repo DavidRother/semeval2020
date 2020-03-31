@@ -86,10 +86,10 @@ dbscan_birch_language = {"latin": {"eps": 2.5, "min_samples": 5, "threshold": 1.
                          "english": {"eps": 2.5, "min_samples": 5, "threshold": 1.5, "branching_factor": 30, "max_clusters": 20},
                          "swedish": {"eps": 2.5, "min_samples": 5, "threshold": 1.5, "branching_factor": 30, "max_clusters": 20}}
 
-gmm_language = {"latin": {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3},
-                "german": {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3},
-                "english": {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3},
-                "swedish": {"n_components": 5, "covariance_type": "diag", "reg_covar": 1e-3}}
+gmm_language = {"latin": {"n_components": 3, "covariance_type": "diag", "reg_covar": 1e-3},
+                "german": {"n_components": 3, "covariance_type": "diag", "reg_covar": 1e-3},
+                "english": {"n_components": 3, "covariance_type": "diag", "reg_covar": 1e-3},
+                "swedish": {"n_components": 3, "covariance_type": "diag", "reg_covar": 1e-3}}
 
 task_params = {"latin": {"k": 2, "n": 5},
                "german": {"k": 2, "n": 5},
