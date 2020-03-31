@@ -25,7 +25,7 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 ################################################
 
 data_load = "embedding_loader"
-model_names = ["GMMLanguage"]
+model_names = ["HDBSCANLanguage"]
 preprocessing_methods = ["UMAP_AE_Language"]
 
 ################################################
@@ -42,16 +42,15 @@ tasks = ("task1", "task2")
 languages = ("english", "latin", "german", "swedish")
 corpora = ("corpus1", "corpus2")
 
-num_trials_per_config = 4
+num_trials_per_config = 10
 
 ################################################
 # Hyperparameter Configs #######################
 ################################################
 
-model_changes = {"GMMLanguage": {"n_components": [5]}}
+model_changes = {"HDBSCANLanguage": {"min_ratio": [0.03]}}
 
-preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [4, 5, 6, 10],
-                                             "n_components": [2, 5, 10]}}
+preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [5]}}
 
 ################################################
 #  Code ########################################
@@ -89,6 +88,7 @@ for model_name in model_names:
 
                                 evalpy.log_run_entries(language_preprocessing_config)
                                 evalpy.log_run_entries(model_config_log)
+                                evalpy.log_run_entries({"Auto Encoder": True})
 
                                 all_labels = []
 
@@ -110,9 +110,9 @@ for model_name in model_names:
 
                                     for fig_idx, word in enumerate(target_words):
                                         # try:
-                                        file1 = f"{paths['auto_embedding_data_path_main']}{language}/corpus1/{word}.npy"
+                                        file1 = f"{paths['auto_embedding_xlmr_data_path_main']}{language}/corpus1/{word}.npy"
                                         auto_embedded_data1 = np.load(file1)
-                                        file2 = f"{paths['auto_embedding_data_path_main']}{language}/corpus2/{word}.npy"
+                                        file2 = f"{paths['auto_embedding_xlmr_data_path_main']}{language}/corpus2/{word}.npy"
                                         auto_embedded_data2 = np.load(file2)
                                         embeddings_label_encoded = []
                                         embeddings_label_encoded.extend([0] * len(auto_embedded_data1))
@@ -149,7 +149,7 @@ for model_name in model_names:
 
                                 if len(all_labels) == 0:
                                     evalpy.log_run_entries({"Noise ratio ALL": -1, "random seed": seed,
-                                                            "Embeddings": "BERT"})
+                                                            "Embeddings": "XLMR"})
                                     continue
                                 truth_data_loader = data_loader_factory.create_data_loader("truth_data_loader",
                                                                                            base_path=paths["truth_test_data_path"])
@@ -166,7 +166,7 @@ for model_name in model_names:
                                 evalpy.log_run_entries(t1_results)
                                 evalpy.log_run_entries(t2_results)
                                 evalpy.log_run_entries({"Noise ratio ALL": noise, "random seed": seed,
-                                                        "Embeddings": "BERT"})
+                                                        "Embeddings": "XLMR"})
 
 
 

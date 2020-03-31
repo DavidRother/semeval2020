@@ -17,9 +17,7 @@ warnings.filterwarnings("ignore", category=NumbaPerformanceWarning)
 # Pipeline architecture ########################
 ################################################
 
-data_load = "lazy_embedding_loader"
-model_name = "DBSCAN_BIRCH"
-preprocessing_method = "UMAP"
+data_load = "lazy_embedding_loader2"
 
 ################################################
 # Configs ######################################
@@ -32,7 +30,7 @@ config_paths = "ProjectPaths"
 ################################################
 
 tasks = ("task1", "task2")
-languages = ("swedish", )
+languages = ("english", )
 corpora = ["corpus1", "corpus2"]
 
 ################################################
@@ -43,7 +41,8 @@ paths = config_factory.get_config(config_paths)
 
 corpora_to_load = list(itertools.product(languages, corpora))
 corpora_embeddings = {f"{language}_{corpus}":
-                      data_loader_factory.create_data_loader(data_load, base_path=paths["embedding_data_path_main"],
+                      data_loader_factory.create_data_loader(data_load,
+                                                             base_path=paths["xlmr_embedding_data_path_main"],
                                                              language=language, corpus=corpus)
                       for language, corpus in corpora_to_load}
 
@@ -62,8 +61,7 @@ for lang_idx, language in enumerate(languages):
         word_embeddings = []
         embeddings_len = []
         for emb_loader in emb_loaders:
-            embedding = np.asarray(emb_loader.lazy_load_embeddings(word), dtype=np.float32)
-            embedding = embedding[:, 1:]
+            embedding = emb_loader.lazy_load_embeddings(word)
             word_embeddings.append(embedding)
             embeddings_len.append(len(embedding))
 
@@ -73,12 +71,12 @@ for lang_idx, language in enumerate(languages):
                                                                 **config_factory.get_config("AutoEncoder"))
         preprocessed_data = preprocessor.fit_transform(x_data)
 
-        task_path = f"{paths['auto_embedding_data_path_main']}/{language}/corpus1/"
+        task_path = f"{paths['auto_embedding_xlmr_data_path_main']}/{language}/corpus1/"
         os.makedirs(task_path, exist_ok=True)
 
         np.save(task_path + word, preprocessed_data[:embeddings_len[0]])
 
-        task_path = f"{paths['auto_embedding_data_path_main']}/{language}/corpus2/"
+        task_path = f"{paths['auto_embedding_xlmr_data_path_main']}/{language}/corpus2/"
         os.makedirs(task_path, exist_ok=True)
 
         np.save(task_path + word, preprocessed_data[embeddings_len[0]:])
