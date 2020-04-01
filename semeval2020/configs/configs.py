@@ -72,10 +72,10 @@ hdbscan = {"latin": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80,
            "english": {"min_ratio": 0.040, "max_min_cluster_size_and_samples": 80, "noise_filter": True},
            "swedish": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": True}}
 
-hdbscan_language = {"latin": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
-                    "german": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
-                    "english": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
-                    "swedish": {"min_ratio": 0.025, "max_min_cluster_size_and_samples": 80, "noise_filter": False}}
+hdbscan_language = {"latin": {"min_ratio": 0.04, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+                    "german": {"min_ratio": 0.04, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+                    "english": {"min_ratio": 0.04, "max_min_cluster_size_and_samples": 80, "noise_filter": False},
+                    "swedish": {"min_ratio": 0.04, "max_min_cluster_size_and_samples": 80, "noise_filter": False}}
 
 dbscan_language = {"latin": {"eps": 2.5, "min_samples": 5},
                    "german": {"eps": 2.5, "min_samples": 5},

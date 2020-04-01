@@ -42,15 +42,15 @@ tasks = ("task1", "task2")
 languages = ("english", "latin", "german", "swedish")
 corpora = ("corpus1", "corpus2")
 
-num_trials_per_config = 10
+num_trials_per_config = 5
 
 ################################################
 # Hyperparameter Configs #######################
 ################################################
 
-model_changes = {"HDBSCANLanguage": {"min_ratio": [0.04, 0.05, 0.08, 0.1, 0.15, 0.2]}}
+model_changes = {"HDBSCANLanguage": {"min_ratio": [0.02, 0.01]}}
 
-preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [5, 7, 10]}}
+preprocessor_changes = {"UMAP_AE_Language": {"n_neighbors": [5, 10]}}
 
 ################################################
 #  Code ########################################
